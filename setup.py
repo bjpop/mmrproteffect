@@ -3,12 +3,8 @@
 from distutils.core import setup
 
 LONG_DESCRIPTION = \
-'''The program reads one or more input FASTA files.
-For each file it computes a variety of statistics, and then
-prints a summary of the statistics as output.
-
-The goal is to provide a solid foundation for new bioinformatics command line tools,
-and is an ideal starting place for new projects.'''
+'''A web application for displaying the results of protein effect prediction.
+'''
 
 
 setup(
@@ -18,12 +14,14 @@ setup(
     author_email='bjpope@unimelb.edu.au',
     packages=['mmrproteffect'],
     package_dir={'mmrproteffect': 'mmrproteffect'},
+    package_data={'mmrproteffect': ['templates/*.html']},
     entry_points={
         'console_scripts': ['mmrproteffect = mmrproteffect.mmrproteffect:main']
     },
     url='https://github.com/bjpop/mmrproteffect',
     license='LICENSE',
-    description=('A prototypical bioinformatics command line tool'),
+    description=('A web application for displaying the results of protein effect prediction.'),
     long_description=(LONG_DESCRIPTION),
-    install_requires=["biopython"],
+    install_requires=["Flask", "Flask-SQLAlchemy"],
+    include_package_data=True,
 )
