@@ -44,7 +44,7 @@ $ pip install -U --user /path/to/strummr
 
 ## Help message
 
-Mmrproteffect can display usage information on the command line via the `-h` or `--help` argument:
+Strummr can display usage information on the command line via the `-h` or `--help` argument:
 
 ```
 $ strummr -h
@@ -56,16 +56,14 @@ $ strummr -h
 If the ``--log FILE`` command line argument is specified, strummr will output a log file containing information about program progress. The log file includes the command line used to execute the program, and a note indicating which files have been processes so far. Events in the log file are annotated with their date and time of occurrence. 
 
 ```
-$ strummr --log bt.log file1.fasta file2.fasta 
+$ strummr --log bt.log --data variants.csv 
 # normal strummr output appears here
 # contents of log file displayed below
 ```
 ```
 $ cat bt.log
 12/04/2016 19:14:47 program started
-12/04/2016 19:14:47 command line: /usr/local/bin/strummr --log bt.log file1.fasta file2.fasta
-12/04/2016 19:14:47 Processing FASTA file from file1.fasta
-12/04/2016 19:14:47 Processing FASTA file from file2.fasta
+12/04/2016 19:14:47 command line: /usr/local/bin/strummr --log bt.log --data variants.csv 
 ```
 
 
