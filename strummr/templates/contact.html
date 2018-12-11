@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% set active_page = "contact" %}
+{% block content %}
+{{ super () }}
+
+<div class="card my-5">
+  <h4 class="card-header">Contact</h4>
+  <div class="card-body">
+
+     <dl class="row">
+
+       <dt class="col-sm-2">Email</dt>
+       <dd class="col-sm-10"><a href="mailto:bjpope@unimelb.edu.au">Bernie Pope</a></dd>
+
+       <dt class="col-sm-2">Address</dt>
+       <dd class="col-sm-10">An address</dd>
+     </dl>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Unkown Variant{% endblock %}
+{% set active_page = "variants" %}
+{% block content %}
+{{ super () }}
+
+<h1 class="display-4 my-5">Unknown Variant</h1>
+
+<p>You requested an unknown variant {{ request }}, please try again.</p>
+
+{% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Variants{% endblock %}
+{% block title %}All Variants{% endblock %}
 {% set active_page = "variants" %}
 {% block content %}
 {{ super () }}
 
-<h1 class="display-4 my-5">Variants</h1>
+<h1 class="display-4 my-5">All Variants</h1>
 
-<table id="variants_table" class="table table-striped">
+<table id="variants_table" class="table table-striped table-sm">
   <thead class="thead-dark">
     <tr>
       <th scope="col">Gene</th>
@@ -86,13 +86,18 @@ show_data = function() {
             { data: "HGVSc" }, 
             { data: "HGVSp" }, 
             { data: "insight_class" }, 
-            { data: null, render: function ( data, type, row ) { return '<a href="">details</a>'; }}
+            { data: null },
         ],
-	//"columnDefs": [ {
-        //    "targets": -1,
-        //   "data": null,
-        //  "defaultContent": "<button>Click!</button>"
-        //} ]
+	"columnDefs": [ {
+            "targets": -1,
+            "data": null,
+            "render": function ( data, type, row ) {
+                console.log(row);
+                var variant_identifiers = [row.chrom, row.pos, row.ref, row.alt];
+                var this_url = "variant/" + variant_identifiers.join("-");
+                return "<a href=" + this_url + ">details</a>";
+            }
+        } ]
       });
 }
 

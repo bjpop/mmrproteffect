@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}StruMMR{% endblock %}
+{% set active_page = "home" %}
+{% block content %}
+{{ super () }}
+
+<div class="media my-5">
+  <!-- <img class="align-self-start mr-3" src="logo_medium.png" alt="StruMMR logo"> -->
+  <div class="media-body">
+      <div class="jumbotron jumbotron-fluid">
+          <div class="container">
+              <h1 class="display-1">StruMMR</h1>
+                  <p class="lead">
+		      Structure and function effect predictions for missense variants in the human mismatch repair proteins
+                  </p>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

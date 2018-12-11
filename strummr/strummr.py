@@ -22,6 +22,7 @@ app = flask.Flask(__name__, template_folder='templates')
 
 EXIT_FILE_IO_ERROR = 1
 EXIT_COMMAND_LINE_ERROR = 2
+EXIT_DUPLICATE_VARIANT = 3
 DEFAULT_VERBOSE = False
 PROGRAM_NAME = "mmrproteffect"
 
@@ -91,7 +92,16 @@ def init_logging(log_filename):
 
 
 @app.route("/")
-def variants_page():
+def home_page():
+    #return flask.render_template('variants.html')
+    return flask.render_template('index.html')
+
+@app.route("/contact.html")
+def contact_page():
+    return flask.render_template('contact.html')
+
+@app.route("/variants.html")
+def all_variants_page():
     return flask.render_template('variants.html')
 
 @app.route("/variants_data")
@@ -99,13 +109,42 @@ def variants_data():
     variants = Data.data
     return flask.jsonify(data=variants)
 
+@app.route("/variant/<coordinate>")
+def variant_page(coordinate):
+    fields = coordinate.split('-')
+    if len(fields) == 4:
+        chrom, pos, ref, alt = fields
+        coord = (chrom, pos, ref, alt)
+        if coord in Data.index:
+            variant_row = Data.index[coord]
+            return flask.render_template('variant.html', variant=variant_row)
+        else:
+            return flask.render_template('unknown_variant.html', request=coordinate), 404
+    else:
+        return flask.render_template('unknown_variant.html', request=coordinate), 404
+
 
 class Data(object):
     data = []
+    index = {}
     def __init__(self, filename):
         with open(filename) as file:
             reader = csv.DictReader(file)
-            Data.data = list(reader)
+            for row in reader:
+                try:
+                    chrom = row['chrom']
+                    pos = row['pos']
+                    ref = row['ref']
+                    alt = row['alt']
+                except:
+                    exit_with_error("Cannot parse input CSV file", EXIT_FILE_IO_ERROR)
+                else:
+                    coord = (chrom, pos, ref, alt)
+                    if coord in Data.index:
+                        exit_with_error("Duplicate entry for {}".format(coord), EXIT_DUPLICATE_VARIANT)
+                    else:
+                        Data.index[coord] = row
+                    Data.data.append(row)
 
 
 def main():

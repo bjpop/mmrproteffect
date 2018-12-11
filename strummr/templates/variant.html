@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}All Variants{% endblock %}
+{% set active_page = "variants" %}
+{% block content %}
+{{ super () }}
+
+<h1 class="display-4 my-5">Variant Metadata</h1>
+
+<table id="variants_table" class="table">
+  <tbody>
+    <tr><th scope="col">Gene</th><td>{{ variant.gene }}</td></tr>
+    <tr><th scope="col">Chromosome</th><td>{{ variant.chrom }}</td></tr>
+    <tr><th scope="col">Exon</th><td>{{ variant.exon }}</td></tr>
+    <tr><th scope="col">Position (hg19)</th><td>{{ variant.pos }}</td></tr>
+    <tr><th scope="col">Reference Allele</th><td>{{ variant.ref }}</td></tr>
+    <tr><th scope="col">Alternate Allele</th><td>{{ variant.alt }}</td></tr>
+    <tr><th scope="col">HGVSc</th><td>{{ variant.HGVSc }}</td></tr>
+    <tr><th scope="col">HGVSp</th><td>{{ variant.HGVSp }}</td></tr>
+    <tr><th scope="col">Genomic Change</th><td>{{ variant.genomic_dna_change }}</td></tr>
+    <tr><th scope="col">Coding Sequence Position</th><td>{{ variant.CDS_pos }}</td></tr>
+    <tr><th scope="col">Protein Position</th><td>{{ variant.protein_pos }}</td></tr>
+    <tr><th scope="col">Consequence</th><td>{{ variant.consequence }}</td></tr>
+    <tr><th scope="col">Impact</th><td>{{ variant.impact }}</td></tr>
+    <tr><th scope="col">Gnomad Population Frequency</th><td>{{ variant.gnomad_af }}</td></tr>
+    <tr><th scope="col">InSiGHT Class</th><td>{{ variant.insight_class }}</td></tr>
+  </tbody>
+</table>
+
+<h3 class="display-4 my-5">Predictions</h3>
+
+<table id="variants_table" class="table">
+  <tbody>
+    <tr><th scope="col">Ada Score</th><td>{{ variant.ada_score }}</td></tr>
+    <tr><th scope="col">Rf Score</th><td>{{ variant.rf_score }}</td></tr>
+    <tr><th scope="col">CADD (phred)</th><td>{{ variant.cadd_phred }}</td></tr>
+    <tr><th scope="col">Revel</th><td>{{ variant.revel_score }}</td></tr>
+    <tr><th scope="col">Maxentscan Ref</th><td>{{ variant.maxentscan_ref }}</td></tr>
+    <tr><th scope="col">Maxentscan Alt</th><td>{{ variant.maxentscan_alt }}</td></tr>
+    <tr><th scope="col">Maxentscan Diff</th><td>{{ variant.maxentscan_diff }}</td></tr>
+  </tbody>
+</table>
+
+{% endblock %}
