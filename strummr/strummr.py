@@ -91,9 +91,13 @@ def init_logging(log_filename):
 
 
 @app.route("/")
-def display_variants():
+def variants_page():
+    return flask.render_template('variants.html')
+
+@app.route("/variants_data")
+def variants_data():
     variants = Data.data
-    return flask.render_template('variants.html', variants=variants)
+    return flask.jsonify(data=variants)
 
 
 class Data(object):

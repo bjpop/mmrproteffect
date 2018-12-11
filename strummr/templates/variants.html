@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Variants{% endblock %}
+{% set active_page = "variants" %}
+{% block content %}
+{{ super () }}
+
+<h1 class="display-4 my-5">Variants</h1>
+
+<table id="variants_table" class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Gene</th>
+      <th scope="col">Chrom</th>
+      <th scope="col">Pos</th>
+      <th scope="col">Ref</th>
+      <th scope="col">Alt</th>
+      <th scope="col">HGVSc</th>
+      <th scope="col">HGVSp</th>
+      <th scope="col">Class</th>
+      <th scope="col">Details</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+  <tfoot>
+      <tr>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+      </tr>
+  </tfoot>
+</table>
+
+<script>
+show_data = function() {
+
+     $('#variants_table').DataTable({
+         "initComplete": function () {
+
+            this.api().columns([2,5,6]).every( function () {
+                var that = this;
+                var column = this;
+                var textinput = $('<input type="text" placeholder="Search"/>')
+                    .appendTo( $(column.footer()).empty() ) 
+                    .on('keyup change', function () {
+                        if ( that.search() !== this.value ) {
+                            that.search( this.value ).draw();
+                        }
+                    } );
+            } );
+
+            this.api().columns([0,1,3,4,7]).every( function () {
+                var column = this;
+                var select = $('<select><option value="" disabled selected hidden>Search</option></select>')
+                    .appendTo( $(column.footer()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
+        },
+        "ajax": "{{ url_for('variants_data') }}",
+        "order": [[ 0, "asc" ]],
+        "pageLength": 20,
+        "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+        "columns": [
+            { data: "gene" },
+            { data: "chrom" },
+            { data: "pos" },
+            { data: "ref" },
+            { data: "alt" }, 
+            { data: "HGVSc" }, 
+            { data: "HGVSp" }, 
+            { data: "insight_class" }, 
+            { data: null, render: function ( data, type, row ) { return '<a href="">details</a>'; }}
+        ],
+	//"columnDefs": [ {
+        //    "targets": -1,
+        //   "data": null,
+        //  "defaultContent": "<button>Click!</button>"
+        //} ]
+      });
+}
+
+
+$(document).ready(function () {
+  show_data();
+});
+</script>
+
+{% endblock %}
