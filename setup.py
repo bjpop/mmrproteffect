@@ -8,20 +8,20 @@ LONG_DESCRIPTION = \
 
 
 setup(
-    name='mmrproteffect',
+    name='strummr',
     version='0.1.0.0',
     author='Bernie Pope',
     author_email='bjpope@unimelb.edu.au',
-    packages=['mmrproteffect'],
-    package_dir={'mmrproteffect': 'mmrproteffect'},
-    package_data={'mmrproteffect': ['templates/*.html']},
+    packages=['strummr'],
+    package_dir={'strummr': 'strummr'},
+    package_data={'strummr': ['templates/*.html']},
     entry_points={
-        'console_scripts': ['mmrproteffect = mmrproteffect.mmrproteffect:main']
+        'console_scripts': ['strummr = strummr.strummr:main']
     },
-    url='https://github.com/bjpop/mmrproteffect',
+    url='https://github.com/bjpop/strummr',
     license='LICENSE',
     description=('A web application for displaying the results of protein effect prediction.'),
     long_description=(LONG_DESCRIPTION),
-    install_requires=["Flask", "Flask-SQLAlchemy"],
+    install_requires=["Flask"], 
     include_package_data=True,
 )
