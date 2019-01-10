@@ -100,6 +100,10 @@ def home_page():
 def contact_page():
     return flask.render_template('contact.html')
 
+@app.route("/about.html")
+def about_page():
+    return flask.render_template('about.html')
+
 @app.route("/variants.html")
 def all_variants_page():
     return flask.render_template('variants.html')
@@ -108,6 +112,11 @@ def all_variants_page():
 def variants_data():
     variants = Data.data
     return flask.jsonify(data=variants)
+
+@app.route("/gene")
+def gene_page():
+    gene_symbol = flask.request.args.get('symbol', default='MSH2', type=str)
+    return flask.render_template('gene.html', symbol=gene_symbol)
 
 @app.route("/variant/<coordinate>")
 def variant_page(coordinate):

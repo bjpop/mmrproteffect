@@ -17,18 +17,14 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
       <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-      <script src="https://d3js.org/d3.v5.min.js"></script>
 
-      <div class="container">
-      <!-- <div class="container-fluid"> -->
+      <!-- <div class="container">  -->
+      <div class="container-fluid">
       {% block content %}
 
       {% set navigation_bar = [
           ('/', 'home', 'Home'),
-          ('/variants.html', 'variants', 'All Variants'),
-          ('/gene?symbol=MSH2', 'MSH2', 'MSH2'),
-          ('/gene?symbol=MSH6', 'MSH6', 'MSH6'),
-          ('/about.html', 'about', 'About'),
+	  ('/variants.html', 'variants', 'Variants'),
           ('/contact.html', 'contact', 'Contact'),
       ] -%}
       {% set active_page = active_page|default('home') -%}

@@ -1,0 +1,1179 @@
+{% extends "base.html" %}
+{% block title %}{{ symbol }}{% endblock %}
+{% set active_page = symbol %}
+{% block content %}
+{{ super () }}
+
+<h1 class="display-4 my-5">{{ symbol }}</h1>
+
+<dl class="row">
+  <dt class="col-sm-3">Uniprot entry for {{ symbol }}</dt>
+  <dd class="col-sm-9" id="uniprot_link"></dd>
+
+  <dt class="col-sm-3">InSiGHT entry for {{ symbol }}</dt>
+  <dd class="col-sm-9" id="insight_link"></dd>
+</dl>
+
+<h3 class="my-5">Lollipop</h3>
+
+<div class="form-check-inline">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_na">Class N/A 
+  </label>
+</div>
+
+<div class="form-check-inline">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_1" checked>Class 1
+  </label>
+</div>
+
+<div class="form-check-inline">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_2" checked>Class 2
+  </label>
+</div>
+
+<div class="form-check-inline">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_3">Class 3
+  </label>
+</div>
+
+<div class="form-check-inline">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_4" checked>Class 4
+  </label>
+</div>
+
+<div class="form-check-inline">
+  <label class="form-check-label">
+    <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_5" checked>Class 5
+  </label>
+</div>
+
+<div id="viz"></div>
+
+<script type="text/javascript">
+
+var global_variant_information = [];
+
+function insight_class_colour(insight_class) {
+    switch(insight_class) {
+        case '5':
+            return 'red';
+        case '4':
+            return 'orange';
+        case '3':
+            return 'grey'
+        case '2':
+            return 'blue';
+        case '1':
+            return 'green';
+        default:
+            return 'black';
+    } 
+}
+
+function get_protein_info(gene_symbol) {
+    switch (gene_symbol) {
+        case 'MSH2':
+            return msh2_pfam; 
+        case 'MSH6':
+            return msh6_pfam; 
+        default:
+            return {};
+    } 
+}
+
+function make_insight_url(gene_symbol) {
+    var url = "www.insight-database.org/genes/" + gene_symbol;
+    return "<a href=https://" + url + ">" + url + "</a>";
+}
+
+function make_uniprot_url(accession) {
+    var url = "www.uniprot.org/uniprot/" + accession
+    return "<a href=https://" + url + ">" + url + "</a>";
+}
+
+function gene_metadata(gene_symbol) {
+    var protein_info = get_protein_info(gene_symbol);
+    $("#uniprot_link").html(make_uniprot_url(protein_info.metadata.accession));
+    $("#insight_link").html(make_insight_url(gene_symbol));
+}
+
+function is_class_selected(insight_class) {
+    switch (insight_class) {
+        case "1":
+            return $('#lollipop_class_1').is(':checked');
+        case "2":
+            return $('#lollipop_class_2').is(':checked');
+        case "3":
+            return $('#lollipop_class_3').is(':checked');
+        case "4":
+            return $('#lollipop_class_4').is(':checked');
+        case "5":
+            return $('#lollipop_class_5').is(':checked');
+        case "N/A":
+            return $('#lollipop_class_na').is(':checked');
+        default:
+            return false;
+    }
+}
+
+function gene_lollipop(gene_symbol) {
+
+    var display_width = 1100;
+    var display_height = 200;
+    var target_div = "#viz";
+    var margin = {top: 20, right: 40, bottom: 20, left: 40};
+
+    var protein_info = get_protein_info(gene_symbol);
+
+    var variants = [];
+    for (var i = 0; i < global_variant_information.length; i++) {
+        var v = global_variant_information[i];
+        if (v.gene == "{{ symbol }}" && is_class_selected(v.insight_class)) {
+            var this_colour = insight_class_colour(v.insight_class); 
+            variants.push({'pos': parseInt(v.protein_pos, 10), 'label': v.HGVSp, 'colour': this_colour});
+        }
+    }
+    variants.sort(function (x, y) { return x.pos - y.pos });
+
+    make_lollipop(display_width, display_height, margin, protein_info.length, protein_info.regions, variants, target_div);
+}
+
+function make_lollipop(total_width, total_height, margin, protein_length, regions, variants, target_div) {
+
+    /* Precondition: we assume the variants are in sorted order of protein position */
+
+    var backbone_colour = d3.rgb(186, 189, 182);
+    var lollipop_radius = 3;
+
+    var drawing_width = total_width - (margin.left + margin.right);
+    var drawing_height = total_height - (margin.top + margin.bottom);
+
+    /* all protein X dimensions should be given in the range (0 - protein_length) */
+    var xScale = d3.scaleLinear()
+        .domain([0, protein_length])
+        .range([0, drawing_width]);
+
+    /* all Y dimensions should be given as a percentage (0 - 1) of the SVG height. */
+    var yScale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([0, drawing_height]);
+
+    var backbone_height = 0.1;
+    var feature_height = 2 * backbone_height;
+
+
+    /* XXX it should be possible to avoid removing the whole SVG, but I can't get it to work at the moment without it */
+    d3.select("svg").remove();
+    var svg = d3.select(target_div)
+        .append("svg")
+        .attr("width", total_width)
+        .attr("height", total_height);    
+
+    /* plot the axis */
+
+    var axisScale = d3.scaleLinear()
+        .domain([0, protein_length]).range([0, drawing_width]);
+
+    var ticks = [];
+    var next_tick = 0;
+    var tick_gap = 100;
+    while (next_tick <= protein_length) {
+        ticks.push(next_tick);
+        next_tick += tick_gap;
+    }
+
+    if (ticks.length > 0 && (protein_length - ticks[ticks.length - 1]) >= 10) {
+        ticks.push(protein_length);
+    }
+
+    var xAxis = d3.axisBottom()
+        .scale(axisScale)
+        .tickValues(ticks);
+
+    var xAxisGroup = svg.append("g")
+        .attr("transform", function(d) { return "translate(" + margin.left + "," + yScale(0.8) + ")"; })
+        .call(xAxis);
+
+    xAxisGroup
+        .selectAll('path')
+        .style({ 'stroke': 'black', 'fill': 'none', 'stroke-width': '1px'});
+
+    /* plot the variants above the protein */
+
+    var previous_variant_pos = null;
+    var min_lollipop_level = 1;
+    var lollipop_level = min_lollipop_level;
+    var lollipop_min_gap = 3;
+    var max_lollipop_level = 10;
+
+    for (var i = 0; i < variants.length; i++) {
+        var this_variant = variants[i];
+        if (previous_variant_pos != null) {
+            var gap = this_variant.pos - previous_variant_pos;
+            if (gap <= lollipop_min_gap ) {
+               //lollipop_level = Math.min(lollipop_level + 1, max_lollipop_level);
+               lollipop_level += 1;
+	       if (lollipop_level > max_lollipop_level) {
+                   lollipop_level = min_lollipop_level;
+               }
+            }
+            else {
+               lollipop_level = min_lollipop_level;
+            }
+        }
+        previous_variant_pos = this_variant.pos;
+        this_variant.level = lollipop_level;
+    }
+
+    var variant_group = svg.append("g")
+        .attr("transform", function(d) { return "translate(" + margin.left + "," + margin.top + ")"; });
+
+    var variant = variant_group.selectAll(".variant")
+        .data(variants)
+        .enter().append("g");
+
+    var lineFunction = d3.line()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; });
+
+    var max_lollipop_stick_len = 0.5;
+
+    function lollipop_height(level) {
+        // this offset is necessary to make sure the lowest dot is a minimum distance away from the protein feature
+        var lollipop_offset = (feature_height / 2) + 0.1;
+        var visible_lollipop_stick_len = max_lollipop_stick_len - lollipop_offset;
+        return yScale(((max_lollipop_level - level) / max_lollipop_level) * visible_lollipop_stick_len);
+    }
+
+    variant.append("path")
+       .attr("d", function(d)
+           { return lineFunction(
+               [{ x: xScale(d.pos), y: lollipop_height(d.level) },
+                { x: xScale(d.pos), y: yScale(max_lollipop_stick_len)}]);
+           })
+       .attr("stroke", 'grey')
+       .attr("stroke-width", 1)
+       .attr("fill", "none");
+
+    variant.append("circle")
+       .attr("cx", function(d) { return xScale(d.pos); })
+       .attr("cy", function(d) { return lollipop_height(d.level); })
+       .attr("r", lollipop_radius)
+       .style("fill", function(d) { return d.colour; });
+
+    /* plot the protein group (backbone and motifs/features) */
+
+    var protein_group = svg.append("g")
+        .attr("transform", function(d) { return "translate(" + margin.left + "," + yScale(0.5) + ")"; });
+
+    protein_group.append("rect")
+        .style("fill", backbone_colour)
+        .attr("width", xScale(protein_length))
+        .attr("height", yScale(backbone_height))
+        .attr("x", 0)
+        .attr("y", yScale((feature_height - backbone_height) / 2));
+
+    var feature = protein_group.selectAll(".feature")
+        .data(regions)
+        .enter().append("g")
+        .attr("transform", function(d) { return "translate(" + xScale(d.start) + ", 0)"; });
+
+    feature.append("rect")
+        .style("fill", function(d) { return d.colour; })
+        .attr("class", "feature")
+        .attr("width", function(d) { return xScale((d.end - d.start) + 1) })
+        .attr("height", yScale(feature_height))
+        .attr("filter", "url(#md-shadow)");
+
+    feature.append("text")
+      .style("fill", "white")
+      .style("font-size", "8px")
+      .style("font-family", "Arial")
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "central")
+      .attr("y", yScale(feature_height / 2))
+      .attr("x", function(d) { return xScale((d.end - d.start) / 2); })
+      .text(function(d) { return d.text ; })
+
+    /* SVG specific definitions */
+
+    var svg_defs = svg.append("defs");
+
+    var shadow_deviation = 2;
+    var shadow_offset = 2;
+    var shadow_slope = 0.25;
+
+    // create filter and assign provided id
+    var filter = svg_defs.append("filter")
+        .attr("height", "125%")    // adjust this if shadow is clipped
+        .attr("id", "md-shadow");
+    
+    // ambient shadow into ambientBlur
+    //   may be able to offset and reuse this for cast, unless modified
+    filter.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", shadow_deviation)
+        .attr("result", "ambientBlur");
+    
+    // cast shadow into castBlur
+    filter.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", shadow_deviation)
+        .attr("result", "castBlur");
+    
+    // offsetting cast shadow into offsetBlur
+    filter.append("feOffset")
+        .attr("in", "castBlur")
+        .attr("dx", shadow_offset - 1)
+        .attr("dy", shadow_offset)
+        .attr("result", "offsetBlur");
+    
+    // combining ambient and cast shadows
+    filter.append("feComposite")
+        .attr("in", "ambientBlur")
+        .attr("in2", "offsetBlur")
+        .attr("result", "compositeShadow");
+    
+    // applying alpha and transferring shadow
+    filter.append("feComponentTransfer")
+        .append("feFuncA")
+            .attr("type", "linear")
+            .attr("slope", shadow_slope);
+    
+    // merging and outputting results
+    var feMerge = filter.append("feMerge");
+    feMerge.append('feMergeNode')
+    feMerge.append("feMergeNode")
+        .attr("in", "SourceGraphic");
+}
+
+/* from http://pfam.xfam.org/protein/P43246 */
+var msh2_pfam = {
+    "length": 934,
+    "regions": [
+        {
+            "modelStart": 2,
+            "modelEnd": 112,
+            "colour": "#2dcf00",
+            "endStyle": "curved",
+            "end": 132,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 131,
+            "modelLength": 113,
+            "text": "MutS_I",
+            "href": "/family/PF01624",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "6.1e-18",
+                "description": "MutS domain I",
+                "end": 132,
+                "accession": "PF01624",
+                "database": "pfam",
+                "identifier": "MutS_I",
+                "aliEnd": 131,
+                "type": "Domain",
+                "aliStart": 18,
+                "start": 17
+            },
+            "aliStart": 18,
+            "start": 17
+        },
+        {
+            "modelStart": 8,
+            "modelEnd": 136,
+            "colour": "#ff5353",
+            "endStyle": "curved",
+            "end": 290,
+            "display": null,
+            "startStyle": "jagged",
+            "aliEnd": 289,
+            "modelLength": 137,
+            "text": "MutS_II",
+            "href": "/family/PF05188",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "1.2e-18",
+                "description": "MutS domain II",
+                "end": 290,
+                "accession": "PF05188",
+                "database": "pfam",
+                "identifier": "MutS_II",
+                "aliEnd": 289,
+                "type": "Domain",
+                "aliStart": 156,
+                "start": 145
+            },
+            "aliStart": 156,
+            "start": 145
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 191,
+            "colour": "#5b5bff",
+            "endStyle": "curved",
+            "end": 472,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 472,
+            "modelLength": 191,
+            "text": "MutS_III",
+            "href": "/family/PF05192",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "5e-34",
+                "description": "MutS domain III",
+                "end": 609,
+                "accession": "PF05192",
+                "database": "pfam",
+                "identifier": "MutS_III",
+                "aliEnd": 609,
+                "type": "Domain",
+                "aliStart": 306,
+                "start": 305
+            },
+            "aliStart": 306,
+            "start": 305
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 191,
+            "colour": "#5b5bff",
+            "endStyle": "straight",
+            "end": 609,
+            "display": null,
+            "startStyle": "straight",
+            "aliEnd": 609,
+            "modelLength": 191,
+            "text": "MutS_III",
+            "href": "/family/PF05192",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "5e-34",
+                "description": "MutS domain III",
+                "end": 609,
+                "accession": "PF05192",
+                "database": "pfam",
+                "identifier": "MutS_III",
+                "aliEnd": 609,
+                "type": "Domain",
+                "aliStart": 306,
+                "start": 305
+            },
+            "aliStart": 570,
+            "start": 570
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 91,
+            "colour": "#ebd61d",
+            "endStyle": "curved",
+            "end": 569,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 568,
+            "modelLength": 92,
+            "text": "MutS_IV",
+            "href": "/family/PF05190",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "8e-17",
+                "description": "MutS family domain IV",
+                "end": 569,
+                "accession": "PF05190",
+                "database": "pfam",
+                "identifier": "MutS_IV",
+                "aliEnd": 568,
+                "type": "Domain",
+                "aliStart": 474,
+                "start": 473
+            },
+            "aliStart": 474,
+            "start": 473
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 188,
+            "colour": "#ba21e0",
+            "endStyle": "curved",
+            "end": 852,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 852,
+            "modelLength": 188,
+            "text": "MutS_V",
+            "href": "/family/PF00488",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "6.8e-83",
+                "description": "MutS domain V",
+                "end": 852,
+                "accession": "PF00488",
+                "database": "pfam",
+                "identifier": "MutS_V",
+                "aliEnd": 852,
+                "type": "Domain",
+                "aliStart": 666,
+                "start": 665
+            },
+            "aliStart": 666,
+            "start": 665
+        }
+    ],
+    "markups": [
+        {
+            "lineColour": "#ff0000",
+            "colour": "#000000",
+            "end": 570,
+            "display": null,
+            "v_align": "top",
+            "metadata": {
+                "database": "pfam",
+                "type": "Link between discontinous regions",
+                "start": 472,
+                "end": 570
+            },
+            "type": "Nested",
+            "start": 472
+        }
+    ],
+    "metadata": {
+        "database": "uniprot",
+        "identifier": "MSH2_HUMAN",
+        "organism": "Homo sapiens (Human)",
+        "description": "DNA mismatch repair protein Msh2",
+        "taxid": "9606",
+        "accession": "P43246"
+    },
+    "motifs": [
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 562,
+                "end": 565
+            },
+            "start": 562,
+            "end": 565,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "coiled_coil",
+            "metadata": {
+                "database": "ncoils",
+                "type": "coiled_coil",
+                "start": 353,
+                "end": 373
+            },
+            "start": 353,
+            "end": 373,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "coiled_coil",
+            "metadata": {
+                "database": "ncoils",
+                "type": "coiled_coil",
+                "start": 478,
+                "end": 498
+            },
+            "start": 478,
+            "end": 498,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "coiled_coil",
+            "metadata": {
+                "database": "ncoils",
+                "type": "coiled_coil",
+                "start": 553,
+                "end": 576
+            },
+            "start": 570,
+            "end": 576,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 559,
+                "end": 571
+            },
+            "start": 570,
+            "end": 571,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 802,
+                "end": 811
+            },
+            "start": 802,
+            "end": 811,
+            "display": false
+        }
+    ]
+};
+
+/* from http://pfam.xfam.org/protein/P52701 */
+var msh6_pfam = {
+    "length": 1360,
+    "regions": [
+        {
+            "modelStart": 1,
+            "modelEnd": 95,
+            "colour": "#2dcf00",
+            "endStyle": "curved",
+            "end": 184,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 183,
+            "modelLength": 96,
+            "text": "PWWP",
+            "href": "/family/PF00855",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "7.9e-18",
+                "description": "PWWP domain",
+                "end": 184,
+                "accession": "PF00855",
+                "database": "pfam",
+                "identifier": "PWWP",
+                "aliEnd": 183,
+                "type": "Domain",
+                "aliStart": 90,
+                "start": 90
+            },
+            "aliStart": 90,
+            "start": 90
+        },
+        {
+            "modelStart": 1,
+            "modelEnd": 111,
+            "colour": "#ff5353",
+            "endStyle": "curved",
+            "end": 526,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 524,
+            "modelLength": 113,
+            "text": "MutS_I",
+            "href": "/family/PF01624",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "2.5e-30",
+                "description": "MutS domain I",
+                "end": 526,
+                "accession": "PF01624",
+                "database": "pfam",
+                "identifier": "MutS_I",
+                "aliEnd": 524,
+                "type": "Domain",
+                "aliStart": 407,
+                "start": 407
+            },
+            "aliStart": 407,
+            "start": 407
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 132,
+            "colour": "#5b5bff",
+            "endStyle": "curved",
+            "end": 703,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 699,
+            "modelLength": 137,
+            "text": "MutS_II",
+            "href": "/family/PF05188",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "2.8e-08",
+                "description": "MutS domain II",
+                "end": 703,
+                "accession": "PF05188",
+                "database": "pfam",
+                "identifier": "MutS_II",
+                "aliEnd": 699,
+                "type": "Domain",
+                "aliStart": 538,
+                "start": 537
+            },
+            "aliStart": 538,
+            "start": 537
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 191,
+            "colour": "#ebd61d",
+            "endStyle": "curved",
+            "end": 931,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 931,
+            "modelLength": 191,
+            "text": "MutS_III",
+            "href": "/family/PF05192",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "5.2e-32",
+                "description": "MutS domain III",
+                "end": 1064,
+                "accession": "PF05192",
+                "database": "pfam",
+                "identifier": "MutS_III",
+                "aliEnd": 1064,
+                "type": "Domain",
+                "aliStart": 739,
+                "start": 738
+            },
+            "aliStart": 739,
+            "start": 738
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 191,
+            "colour": "#ebd61d",
+            "endStyle": "straight",
+            "end": 1064,
+            "display": null,
+            "startStyle": "straight",
+            "aliEnd": 1064,
+            "modelLength": 191,
+            "text": "MutS_III",
+            "href": "/family/PF05192",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "5.2e-32",
+                "description": "MutS domain III",
+                "end": 1064,
+                "accession": "PF05192",
+                "database": "pfam",
+                "identifier": "MutS_III",
+                "aliEnd": 1064,
+                "type": "Domain",
+                "aliStart": 739,
+                "start": 738
+            },
+            "aliStart": 1025,
+            "start": 1025
+        },
+        {
+            "modelStart": 1,
+            "modelEnd": 92,
+            "colour": "#ba21e0",
+            "endStyle": "curved",
+            "end": 1024,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 1024,
+            "modelLength": 92,
+            "text": "MutS_IV",
+            "href": "/family/PF05190",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "1.4e-16",
+                "description": "MutS family domain IV",
+                "end": 1024,
+                "accession": "PF05190",
+                "database": "pfam",
+                "identifier": "MutS_IV",
+                "aliEnd": 1024,
+                "type": "Domain",
+                "aliStart": 932,
+                "start": 932
+            },
+            "aliStart": 932,
+            "start": 932
+        },
+        {
+            "modelStart": 2,
+            "modelEnd": 187,
+            "colour": "#ff9c42",
+            "endStyle": "curved",
+            "end": 1324,
+            "display": null,
+            "startStyle": "curved",
+            "aliEnd": 1323,
+            "modelLength": 188,
+            "text": "MutS_V",
+            "href": "/family/PF00488",
+            "type": "pfama",
+            "metadata": {
+                "scoreName": "e-value",
+                "score": "1.8e-67",
+                "description": "MutS domain V",
+                "end": 1324,
+                "accession": "PF00488",
+                "database": "pfam",
+                "identifier": "MutS_V",
+                "aliEnd": 1323,
+                "type": "Domain",
+                "aliStart": 1131,
+                "start": 1130
+            },
+            "aliStart": 1131,
+            "start": 1130
+        }
+    ],
+    "markups": [
+        {
+            "lineColour": "#ff0000",
+            "colour": "#000000",
+            "end": 1025,
+            "display": null,
+            "v_align": "top",
+            "metadata": {
+                "database": "pfam",
+                "type": "Link between discontinous regions",
+                "start": 931,
+                "end": 1025
+            },
+            "type": "Nested",
+            "start": 931
+        }
+    ],
+    "metadata": {
+        "database": "uniprot",
+        "identifier": "MSH6_HUMAN",
+        "organism": "Homo sapiens (Human)",
+        "description": "DNA mismatch repair protein Msh6 {ECO:0000250|UniProtKB:P54276}",
+        "taxid": "9606",
+        "accession": "P52701"
+    },
+    "motifs": [
+        {
+            "colour": "#cccccc",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 19,
+                "end": 78
+            },
+            "start": 51,
+            "end": 78,
+            "display": null
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 145,
+                "end": 148
+            },
+            "start": 145,
+            "end": 148,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 153,
+                "end": 154
+            },
+            "start": 153,
+            "end": 154,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 158,
+                "end": 164
+            },
+            "start": 158,
+            "end": 164,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 166,
+                "end": 171
+            },
+            "start": 166,
+            "end": 171,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 176,
+                "end": 179
+            },
+            "start": 176,
+            "end": 179,
+            "display": false
+        },
+        {
+            "colour": "#cccccc",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 191,
+                "end": 360
+            },
+            "start": 264,
+            "end": 360,
+            "display": null
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 376,
+                "end": 390
+            },
+            "start": 390,
+            "end": 390,
+            "display": false
+        },
+        {
+            "colour": "#00ffff",
+            "type": "disorder",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 836,
+                "end": 837
+            },
+            "start": 836,
+            "end": 837,
+            "display": false
+        },
+        {
+            "colour": "#86bcff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 22,
+                "end": 50
+            },
+            "start": 22,
+            "end": 50,
+            "display": null
+        },
+        {
+            "colour": "#86bcff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 197,
+                "end": 208
+            },
+            "start": 197,
+            "end": 208,
+            "display": null
+        },
+        {
+            "colour": "#86bcff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 219,
+                "end": 229
+            },
+            "start": 219,
+            "end": 229,
+            "display": null
+        },
+        {
+            "colour": "#86bcff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 237,
+                "end": 251
+            },
+            "start": 237,
+            "end": 251,
+            "display": null
+        },
+        {
+            "colour": "#86bcff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 249,
+                "end": 263
+            },
+            "start": 252,
+            "end": 263,
+            "display": null
+        },
+        {
+            "colour": "#86bcff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 373,
+                "end": 389
+            },
+            "start": 373,
+            "end": 389,
+            "display": null
+        },
+        {
+            "colour": "#00ffff",
+            "type": "low_complexity",
+            "metadata": {
+                "database": "segmasker",
+                "type": "low_complexity",
+                "start": 809,
+                "end": 821
+            },
+            "start": 809,
+            "end": 821,
+            "display": false
+        },
+        {
+            "colour": "#cccccc",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 19,
+                "end": 78
+            },
+            "type": "disorder",
+            "display": null,
+            "end": 21,
+            "start": 19
+        },
+        {
+            "colour": "#cccccc",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 191,
+                "end": 360
+            },
+            "type": "disorder",
+            "display": null,
+            "end": 196,
+            "start": 191
+        },
+        {
+            "colour": "#cccccc",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 191,
+                "end": 360
+            },
+            "type": "disorder",
+            "display": null,
+            "end": 218,
+            "start": 209
+        },
+        {
+            "colour": "#cccccc",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 191,
+                "end": 360
+            },
+            "type": "disorder",
+            "display": null,
+            "end": 236,
+            "start": 230
+        },
+        {
+            "colour": "#00ffff",
+            "metadata": {
+                "database": "IUPred",
+                "type": "disorder",
+                "start": 191,
+                "end": 360
+            },
+            "type": "disorder",
+            "display": false,
+            "end": 251,
+            "start": 252
+        }
+    ]
+};
+
+function main() {
+
+    /* event handlers */
+    $( ".lollipop_class" ).change(function() {
+        gene_lollipop("{{ symbol }}");
+    });
+
+    gene_metadata("{{ symbol }}");
+
+    $.ajax({
+        type: "GET",
+        url: "/variants_data",
+        //data: myusername,
+        cache: false,
+        success: function(response){
+            global_variant_information = response.data;
+	    gene_lollipop("{{ symbol }}");
+        }
+    }); 
+
+}
+
+$(document).ready(function () {
+    main()
+});
+</script>
+
+
+{% endblock %}

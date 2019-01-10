@@ -92,7 +92,6 @@ show_data = function() {
             "targets": -1,
             "data": null,
             "render": function ( data, type, row ) {
-                console.log(row);
                 var variant_identifiers = [row.chrom, row.pos, row.ref, row.alt];
                 var this_url = "variant/" + variant_identifiers.join("-");
                 return "<a href=" + this_url + ">details</a>";
