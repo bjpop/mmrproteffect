@@ -57,6 +57,11 @@ def parse_args():
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s ' + PROGRAM_VERSION)
+    parser.add_argument('--pdb',
+                        metavar='FILE',
+                        type=str, 
+                        required=True,
+                        help='pdb file for protein')
     parser.add_argument('--data',
                         metavar='FILE',
                         type=str, 
@@ -113,6 +118,11 @@ def variants_data():
     variants = Data.data
     return flask.jsonify(data=variants)
 
+@app.route("/pdb")
+def pdb_data():
+    pdb = Data.pdb
+    return flask.jsonify(data=pdb)
+
 @app.route("/gene")
 def gene_page():
     gene_symbol = flask.request.args.get('symbol', default='MSH2', type=str)
@@ -136,9 +146,13 @@ def variant_page(coordinate):
 class Data(object):
     data = []
     index = {}
-    def __init__(self, filename):
-        with open(filename) as file:
-            reader = csv.DictReader(file)
+    pdb = "" 
+    def __init__(self, options):
+        with open(options.pdb) as pdb_file:
+            Data.pdb = pdb_file.read()
+
+        with open(options.data) as variants_file:
+            reader = csv.DictReader(variants_file)
             for row in reader:
                 try:
                     chrom = row['chrom']
@@ -160,7 +174,7 @@ def main():
     "Orchestrate the execution of the program"
     options = parse_args()
     init_logging(options.log)
-    Data(options.data)
+    Data(options)
     app.run(host='0.0.0.0')
 
 
