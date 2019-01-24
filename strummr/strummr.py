@@ -62,11 +62,11 @@ def parse_args():
                         type=str, 
                         required=True,
                         help='pdb file for protein')
-    parser.add_argument('--data',
+    parser.add_argument('--variants',
                         metavar='FILE',
                         type=str, 
                         required=True,
-                        help='data file containing variant information')
+                        help='CSV file containing variant information')
     parser.add_argument('--log',
                         metavar='LOG_FILE',
                         type=str,
@@ -149,9 +149,10 @@ class Data(object):
     pdb = "" 
     def __init__(self, options):
         with open(options.pdb) as pdb_file:
+            # We assume the pdb file is correct, and do not try to parse its contents.
             Data.pdb = pdb_file.read()
 
-        with open(options.data) as variants_file:
+        with open(options.variants) as variants_file:
             reader = csv.DictReader(variants_file)
             for row in reader:
                 try:
