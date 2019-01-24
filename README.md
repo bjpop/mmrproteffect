@@ -17,12 +17,12 @@ Clone this repository:
 $ git clone https://github.com/bjpop/strummr
 ```
 
-Move into the repository directory:
+Move into a directory where you want to install the code, for example:
 ```
-$ cd strummr
+$ cd $HOME/scratch
 ```
 
-Mmrproteffect can be installed using `pip` in a variety of ways (`$` indicates the command line prompt):
+StruMMR can be installed using `pip` in a variety of ways (`$` indicates the command line prompt):
 
 1. Inside a virtual environment:
 ```
