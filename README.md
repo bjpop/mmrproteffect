@@ -2,6 +2,8 @@
 
 # Overview 
 
+StruMMR is a web application for dislpaying DNA mismatch repair variant effect predictions.
+
 In the examples below, `$` indicates the command line prompt.
 
 # Licence
@@ -40,41 +42,36 @@ $ pip install -U --user /path/to/strummr
 
 # General behaviour
 
-
-
 ## Help message
 
 Strummr can display usage information on the command line via the `-h` or `--help` argument:
 
 ```
 $ strummr -h
-```
+usage: strummr [-h] [--version] --pdb FILE --data FILE [--log LOG_FILE]
 
+Read one or more FASTA files, compute simple stats for each file
+
+optional arguments:
+  -h, --help      show this help message and exit
+  --version       show program's version number and exit
+  --pdb FILE      pdb file for protein
+  --data FILE     data file containing variant information
+  --log LOG_FILE  record program progress in LOG_FILE
+
+```
 
 ## Logging
 
-If the ``--log FILE`` command line argument is specified, strummr will output a log file containing information about program progress. The log file includes the command line used to execute the program, and a note indicating which files have been processes so far. Events in the log file are annotated with their date and time of occurrence. 
-
-```
-$ strummr --log bt.log --data variants.csv 
-# normal strummr output appears here
-# contents of log file displayed below
-```
-```
-$ cat bt.log
-12/04/2016 19:14:47 program started
-12/04/2016 19:14:47 command line: /usr/local/bin/strummr --log bt.log --data variants.csv 
-```
-
+If the ``--log FILE`` command line argument is specified, strummr will output a log file containing information about program progress. 
 
 # Exit status values
 
 Mmrproteffect returns the following exit status values:
 
 * 0: The program completed successfully.
-* 1: File I/O error. This can occur if at least one of the input FASTA files cannot be opened for reading. This can occur because the file does not exist at the specified path, or strummr does not have permission to read from the file. 
-* 2: A command line error occurred. This can happen if the user specifies an incorrect command line argument. In this circumstance strummr will also print a usage message to the standard error device (stderr).
-
+* 1: File I/O error. 
+* 2: A command line error occurred. 
 
 # Bug reporting and feature requests
 
