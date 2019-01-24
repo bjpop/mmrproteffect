@@ -39,6 +39,13 @@ $ pip install -U /path/to/strummr
 $ pip install -U --user /path/to/strummr
 ```
 
+# Project structure for developers
+
+ * Example input data is in `data`.
+ * Web assets for the client-side code are in `strummr/static/`, with separate sub-directories for `css`, `js`, and `images`. Note that these folders are copied into the package directory when StruMMR is installed. See details in `setup.py` for details.
+ * The code for the web-server application is in `strummr/strummr.py`.
+ * HTML templates are in `strummr/templates/`. Note that these files are copied into the package directory when StruMMR is installed. See details in `setup.py` for details.
+
 # General behaviour
 
 ## Command line arguments
