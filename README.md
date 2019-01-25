@@ -51,12 +51,12 @@ $ pip install -U --user /path/to/strummr
 ## Command line arguments
 
  * `--pdb FILE` the name of the PDB file used for the MSH2/MSH6 protein complex structure. See `data/2o8c.pdb` for an example.
- * `--variants FILE` the name of the CSV file containing variant information. The file must have column headers. See `data/MSH2_MSH6.missense.csv` for an example.
+ * `--variants FILE` the name of the CSV file containing variant information. The file must have column headers. See `data/MSH2_MSH6.all.csv` for an example.
 
 ## Example command line
 
 ```
-$ strummr --pdb 2o8c.pdb --variants MSH2_MSH6.missense.csv 
+$ strummr --pdb 2o8c.pdb --variants MSH2_MSH6.all.csv 
 ```
 This should start up a local web-server on `http://0.0.0.0:5000/` that you can open in your web browser.
 
