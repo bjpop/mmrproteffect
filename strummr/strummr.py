@@ -24,7 +24,7 @@ EXIT_FILE_IO_ERROR = 1
 EXIT_COMMAND_LINE_ERROR = 2
 EXIT_DUPLICATE_VARIANT = 3
 DEFAULT_VERBOSE = False
-PROGRAM_NAME = "mmrproteffect"
+PROGRAM_NAME = "strummr"
 
 
 try:
@@ -161,7 +161,7 @@ class Data(object):
                     ref = row['ref']
                     alt = row['alt']
                 except:
-                    exit_with_error("Cannot parse input CSV file", EXIT_FILE_IO_ERROR)
+                    exit_with_error("Cannot parse input CSV file: {}".format(dict(row)), EXIT_FILE_IO_ERROR)
                 else:
                     coord = (chrom, pos, ref, alt)
                     if coord in Data.index:

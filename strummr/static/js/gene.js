@@ -189,10 +189,10 @@ function show_variants_table() {
                 data: "alt"
             },
             {
-                data: "HGVSc"
+                data: "hgvsc"
             },
             {
-                data: "HGVSp"
+                data: "hgvsp"
             },
             {
                 data: "insight_class"
@@ -215,11 +215,11 @@ function show_variants_table() {
 
     variants_table.on('select', function (e, dt, type, indexes) {
         var row = table.rows(indexes).data()[0];
-        highlight_variant_in_structure(row['protein_pos']);
+        highlight_variant_in_structure(row['protein_position']);
     })
     .on('deselect', function ( e, dt, type, indexes ) {
         var row = table.rows(indexes).data()[0];
-        un_highlight_variant_in_structure(row['protein_pos']);
+        un_highlight_variant_in_structure(row['protein_position']);
     });
 
     return variants_table;
@@ -290,6 +290,23 @@ function is_class_selected(insight_class) {
     }
 }
 
+function is_impact_selected(impact) {
+    switch (impact) {
+        case "LOW":
+            return $('#lollipop_impact_low').is(':checked');
+        case "MODERATE":
+            return $('#lollipop_impact_moderate').is(':checked');
+        case "HIGH":
+            return $('#lollipop_impact_high').is(':checked');
+        case "MODIFIER":
+            return $('#lollipop_impact_modifier').is(':checked');
+        case "N/A":
+            return $('#lollipop_impact_na').is(':checked');
+        default:
+            return false;
+    }
+}
+
 function gene_lollipop(gene_symbol) {
 
     var display_width = 1100;
@@ -307,13 +324,16 @@ function gene_lollipop(gene_symbol) {
     var variants = [];
     for (var i = 0; i < global_variant_information.length; i++) {
         var v = global_variant_information[i];
-        if (v.gene == gene_symbol && is_class_selected(v.insight_class)) {
+        if (v.gene == gene_symbol && is_class_selected(v.insight_class) && is_impact_selected(v.impact)) {
             var this_colour = insight_class_colour(v.insight_class);
-            variants.push({
-                'pos': parseInt(v.protein_pos, 10),
-                'label': v.HGVSp,
-                'colour': this_colour
-            });
+            var position_integer = parseInt(v.protein_position, 10);
+	    if (position_integer) {
+                variants.push({
+                    'pos': position_integer, 
+                    'label': v.HGVSp,
+                    'colour': this_colour
+                });
+            }
         }
     }
     variants.sort(function(x, y) {
@@ -402,7 +422,6 @@ function make_lollipop(total_width, total_height, margin, protein_length, region
         if (previous_variant_pos != null) {
             var gap = this_variant.pos - previous_variant_pos;
             if (gap <= lollipop_min_gap) {
-                //lollipop_level = Math.min(lollipop_level + 1, max_lollipop_level);
                 lollipop_level += 1;
                 if (lollipop_level > max_lollipop_level) {
                     lollipop_level = min_lollipop_level;
@@ -568,8 +587,8 @@ function make_lollipop(total_width, total_height, margin, protein_length, region
         .attr("in", "SourceGraphic");
 }
 
-function filter_variants_to_gene(gene, variants) {
-    return variants.filter(item => item.gene == gene);
+function filter_variants_to_gene_and_protein(gene, variants) {
+    return variants.filter(item => item.gene == gene && item.protein_position.length > 0);
 }
 
 function clear_selected_variants() {
@@ -590,6 +609,10 @@ function main(gene_symbol) {
 
     /* event handlers */
     $(".lollipop_class").change(function() {
+        gene_lollipop(gene_symbol);
+    });
+
+    $(".lollipop_impact").change(function() {
         gene_lollipop(gene_symbol);
     });
 
@@ -615,7 +638,7 @@ function main(gene_symbol) {
         success: function(response) {
             // keep only variants relevant to the gene of interest
             // XXX perhaps this should happen on the server?
-            global_variant_information = filter_variants_to_gene(gene_symbol, response.data);
+            global_variant_information = filter_variants_to_gene_and_protein(gene_symbol, response.data);
             gene_lollipop(gene_symbol);
             table = show_variants_table();
             global['variants_table'] = table;

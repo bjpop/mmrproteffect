@@ -61,10 +61,10 @@ function show_variants_table() {
                 data: "alt"
             },
             {
-                data: "HGVSc"
+                data: "hgvsc"
             },
             {
-                data: "HGVSp"
+                data: "hgvsp"
             },
             {
                 data: "insight_class"
@@ -73,7 +73,8 @@ function show_variants_table() {
                 data: null
             },
         ],
-        "columnDefs": [{
+        "columnDefs": [
+	   {
             "targets": -1,
             "data": null,
             "render": function(data, type, row) {
@@ -81,6 +82,7 @@ function show_variants_table() {
                 var this_url = "variant/" + variant_identifiers.join("-");
                 return "<a href=" + this_url + ">details</a>";
             }
-        }]
+          }
+	]
     });
 }
