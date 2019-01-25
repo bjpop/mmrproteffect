@@ -22,7 +22,7 @@ Move into a directory where you want to install the code, for example:
 $ cd $HOME/scratch
 ```
 
-StruMMR can be installed using `pip` in a variety of ways (`$` indicates the command line prompt):
+StruMMR can be installed using `pip` in a variety of ways:
 
 1. Inside a virtual environment:
 ```
