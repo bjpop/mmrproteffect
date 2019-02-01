@@ -37,6 +37,10 @@ function visualise_protein_structure() {
         });
     });
 
+    $("#fullscreen").on("click", function (e) {
+        stage.toggleFullscreen();
+
+    });
 
     $('#show_msh6, #show_msh2, #show_dna').change(function(){
         toggle_component($(this).prop("name"),this.checked);
