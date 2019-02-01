@@ -23,6 +23,10 @@ function visualise_protein_structure() {
         }
     });
 
+    $('#show_msh6, #show_msh2, #show_dna').change(function(){
+        toggle_component($(this).prop("name"),this.checked);
+    });
+
     // Handle window resizing
     window.addEventListener("resize", function(event) {
         stage.handleResize();
@@ -38,7 +42,6 @@ function visualise_protein_structure() {
             });
             stage.loadFile(stringBlob, {
                 ext: "pdb",
-                defaultRepresentation: true
                 //defaultRepresentation: false 
             }).then(initialise_pdb_component);
         }
@@ -113,6 +116,41 @@ function un_highlight_variant_in_structure(protein_pos) {
     }
 }
 
+function toggle_component(component_name,show){
+   var component = global['pdb_component']
+   var chain_id = gene_to_pdb_chain[component_name];
+
+    if (show) {
+        if (component_name == "DNA"){
+            component.addRepresentation("base", {
+                name: 'DNA',
+                sele: ":E or :F",
+                quality: "high"
+            });
+            component.addRepresentation("cartoon", {
+                name: 'DNA',
+                sele: ":E or :F",
+                quality: "high"
+            });
+        }
+        else{
+            component.addRepresentation("cartoon", {
+                name: component_name,
+                sele: chain_id,
+                quality: "high"
+            });
+            component.addRepresentation("ball+stick", {
+                name: component_name,
+                sele: "(hetero and " + chain_id + ") and not (water)",
+                quality: "high"
+            });
+        }
+    }
+    else {
+        component.stage.getRepresentationsByName(component_name).dispose();
+    }
+}
+
 function highlight_residue(radius, colour, chain_id, residue_pos) {
    var stage = global['stage'];
    var structure = global['pdb_component'].structure;
@@ -130,6 +168,38 @@ function highlight_residue(radius, colour, chain_id, residue_pos) {
 }
 
 function initialise_pdb_component(component) {
+    component.addRepresentation("cartoon", {
+        name: 'MSH2',
+        sele: ":A",
+        quality: "high"
+    });
+    component.addRepresentation("ball+stick", {
+        name: 'MSH2',
+        sele: "(hetero and :A) and not (water)",
+        quality: "high"
+    });
+    component.addRepresentation("cartoon", {
+        name: 'MSH6',
+        sele: ":B",
+        quality: "high"
+    });
+    component.addRepresentation("ball+stick", {
+        name: 'MSH6',
+        sele: "(hetero and :B) and not (water)",
+        quality: "high"
+    });
+    component.addRepresentation("base", {
+        name: 'DNA',
+        sele: ":E or :F",
+        quality: "high"
+    });
+    component.addRepresentation("cartoon", {
+        name: 'DNA',
+        sele: ":E or :F",
+        quality: "high"
+    });
+    component.autoView();
+
    global['pdb_component'] = component;
 }
 
