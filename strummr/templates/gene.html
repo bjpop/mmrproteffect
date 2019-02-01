@@ -116,15 +116,79 @@
                     <div class="border" id="protein_structure_viewport" style="width:500px; height:500px;"></div>
                 </div>
                 <div class="col">
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" id="show_labels">Show Labels</label>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Controls</h5>
+                        </div>
                     </div>
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" id="spin_protein">Spin</label>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="show_msh6" name="MSH6" checked>Show MSH6
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="show_msh2" name="MSH2" checked>Show MSH2
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="show_dna" name="DNA" checked>Show DNA
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="show_labels">Show Labels
+                                </label>
+                            </div>
+                        </div>
                     </div>
-		    <button class="btn btn-primary" type="button" id="reset_visualisation_button">Reset</button>
+                    <div class="row">
+                        <div class="col">
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Actions</h5>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col">
+                            <button class="btn btn-outline-secondary" type="button" id="spin_protein"><i class="fas fa-sync-alt"></i> Spin</button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-outline-secondary" type="button" id="screenshot"><i class="fas fa-camera"></i> Screenshot</button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-outline-secondary" type="button" id="fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-outline-secondary" type="button" id="help"  data-toggle="collapse" data-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp"><i class="fas fa-question-circle"></i> Help</button>
+                        </div>
+                    </div>
+                    <div id="collapseHelp" class="row collapse">
+                        <div class="col">
+                            <div class="alert alert-info" role="alert">
+                                <p><span class="badge badge-secondary">left-click + drag</span> Rotate</p>
+                                <p><span class="badge badge-secondary">right-click + drag</span> Translate</p>
+                                <p><span class="badge badge-secondary">mouse wheel</span> Zoom</p>
+                                <p><span class="badge badge-secondary">click on structure</span> Center on clicked region</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-default" type="button" id="reset_visualisation_button"><i class="fas fa-redo"></i> Reset</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

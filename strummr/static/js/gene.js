@@ -14,13 +14,47 @@ function visualise_protein_structure() {
     global['stage'] = stage;
 
 
-    $('#spin_protein').change(function() {
-        if (this.checked) {
-            stage.toggleSpin();
+    $('#spin_protein').on('click',function() {
+        if($(this).hasClass("btn-outline-secondary")){
+            $(this).removeClass("btn-outline-secondary");
+            $(this).addClass("btn-secondary");
         }
-        else {
-            stage.toggleSpin();
+        else{
+            $(this).removeClass("btn-secondary");
+            $(this).addClass("btn-outline-secondary");
         }
+        stage.toggleSpin();
+    });
+
+    $("#screenshot").on("click", function (e) {
+        stage.makeImage({
+            factor: 1,
+            antialias: true,
+            trim: false,
+            transparent: true
+        }).then(function (blob) {
+            NGL.download(blob, "screenshot.png");
+        });
+    });
+
+    $("#fullscreen").on("click", function (e) {
+        stage.toggleFullscreen();
+
+    });
+
+    $('#help').on('click',function() {
+        if($(this).hasClass("btn-outline-secondary")){
+            $(this).removeClass("btn-outline-secondary");
+            $(this).addClass("btn-secondary");
+        }
+        else{
+            $(this).removeClass("btn-secondary");
+            $(this).addClass("btn-outline-secondary");
+        }
+    });
+
+    $('#show_msh6, #show_msh2, #show_dna').change(function(){
+        toggle_component($(this).prop("name"),this.checked);
     });
 
     // Handle window resizing
@@ -38,7 +72,6 @@ function visualise_protein_structure() {
             });
             stage.loadFile(stringBlob, {
                 ext: "pdb",
-                defaultRepresentation: true
                 //defaultRepresentation: false 
             }).then(initialise_pdb_component);
         }
@@ -88,12 +121,12 @@ var gene_to_pdb_chain = {
     "MSH6": ":B",
 };
 
-function highlight_variant_in_structure(protein_pos) {
+function highlight_variant_in_structure(protein_pos, insight_class) {
     // Don't highlight variants that are already highlighted
     var highlighted_variants = global['highlighted_variants'];
     if (!(protein_pos in highlighted_variants)) {
         var gene_symbol = global['gene_symbol'];
-        var colour = [1.0, 0, 0, 0.5];
+        var colour = new NGL.Color(insight_class_colour(insight_class));
         var radius = 5;
         var pdb_chain = gene_to_pdb_chain[gene_symbol];
         var shape_component = highlight_residue(radius, colour, pdb_chain, protein_pos); 
@@ -113,6 +146,41 @@ function un_highlight_variant_in_structure(protein_pos) {
     }
 }
 
+function toggle_component(component_name,show){
+   var component = global['pdb_component']
+   var chain_id = gene_to_pdb_chain[component_name];
+
+    if (show) {
+        if (component_name == "DNA"){
+            component.addRepresentation("base", {
+                name: 'DNA',
+                sele: ":E or :F",
+                quality: "high"
+            });
+            component.addRepresentation("cartoon", {
+                name: 'DNA',
+                sele: ":E or :F",
+                quality: "high"
+            });
+        }
+        else{
+            component.addRepresentation("cartoon", {
+                name: component_name,
+                sele: chain_id,
+                quality: "high"
+            });
+            component.addRepresentation("ball+stick", {
+                name: component_name,
+                sele: "(hetero and " + chain_id + ") and not (water)",
+                quality: "high"
+            });
+        }
+    }
+    else {
+        component.stage.getRepresentationsByName(component_name).dispose();
+    }
+}
+
 function highlight_residue(radius, colour, chain_id, residue_pos) {
    var stage = global['stage'];
    var structure = global['pdb_component'].structure;
@@ -129,8 +197,43 @@ function highlight_residue(radius, colour, chain_id, residue_pos) {
     }
 }
 
+function set_default_representation(component){
+    component.addRepresentation("cartoon", {
+        name: 'MSH2',
+        sele: ":A",
+        quality: "high"
+    });
+    component.addRepresentation("ball+stick", {
+        name: 'MSH2',
+        sele: "(hetero and :A) and not (water)",
+        quality: "high"
+    });
+    component.addRepresentation("cartoon", {
+        name: 'MSH6',
+        sele: ":B",
+        quality: "high"
+    });
+    component.addRepresentation("ball+stick", {
+        name: 'MSH6',
+        sele: "(hetero and :B) and not (water)",
+        quality: "high"
+    });
+    component.addRepresentation("base", {
+        name: 'DNA',
+        sele: ":E or :F",
+        quality: "high"
+    });
+    component.addRepresentation("cartoon", {
+        name: 'DNA',
+        sele: ":E or :F",
+        quality: "high"
+    });
+    component.autoView();
+}
+
 function initialise_pdb_component(component) {
-   global['pdb_component'] = component;
+    set_default_representation(component);
+    global['pdb_component'] = component;
 }
 
 function show_variants_table() {
@@ -215,7 +318,7 @@ function show_variants_table() {
 
     variants_table.on('select', function (e, dt, type, indexes) {
         var row = table.rows(indexes).data()[0];
-        highlight_variant_in_structure(row['protein_position']);
+        highlight_variant_in_structure(row['protein_position'], row['insight_class']);
     })
     .on('deselect', function ( e, dt, type, indexes ) {
         var row = table.rows(indexes).data()[0];
@@ -623,9 +726,15 @@ function main(gene_symbol) {
 
     /* event handlers */
     $("#reset_visualisation_button").click(function() {
-       // XXX this should set the visualisation back to 
-       // something centered, perhaps using the original
-       // orientation
+        var component = global['pdb_component'];
+
+        set_default_representation(component);
+
+        $("#show_msh6"). prop("checked", true);
+        $("#show_msh2"). prop("checked", true);
+        $("#show_dna"). prop("checked", true);
+        $("#show_labels"). prop("checked", false);
+
     });
 
     gene_metadata(gene_symbol);
