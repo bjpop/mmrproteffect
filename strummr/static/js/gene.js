@@ -197,7 +197,7 @@ function highlight_residue(radius, colour, chain_id, residue_pos) {
     }
 }
 
-function initialise_pdb_component(component) {
+function set_default_representation(component){
     component.addRepresentation("cartoon", {
         name: 'MSH2',
         sele: ":A",
@@ -229,8 +229,11 @@ function initialise_pdb_component(component) {
         quality: "high"
     });
     component.autoView();
+}
 
-   global['pdb_component'] = component;
+function initialise_pdb_component(component) {
+    set_default_representation(component);
+    global['pdb_component'] = component;
 }
 
 function show_variants_table() {
@@ -723,9 +726,15 @@ function main(gene_symbol) {
 
     /* event handlers */
     $("#reset_visualisation_button").click(function() {
-       // XXX this should set the visualisation back to 
-       // something centered, perhaps using the original
-       // orientation
+        var component = global['pdb_component'];
+
+        set_default_representation(component);
+
+        $("#show_msh6"). prop("checked", true);
+        $("#show_msh2"). prop("checked", true);
+        $("#show_dna"). prop("checked", true);
+        $("#show_labels"). prop("checked", false);
+
     });
 
     gene_metadata(gene_symbol);
