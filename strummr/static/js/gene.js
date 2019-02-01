@@ -42,6 +42,17 @@ function visualise_protein_structure() {
 
     });
 
+    $('#help').on('click',function() {
+        if($(this).hasClass("btn-outline-secondary")){
+            $(this).removeClass("btn-outline-secondary");
+            $(this).addClass("btn-secondary");
+        }
+        else{
+            $(this).removeClass("btn-secondary");
+            $(this).addClass("btn-outline-secondary");
+        }
+    });
+
     $('#show_msh6, #show_msh2, #show_dna').change(function(){
         toggle_component($(this).prop("name"),this.checked);
     });
