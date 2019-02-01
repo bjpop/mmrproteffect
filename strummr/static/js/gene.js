@@ -14,13 +14,16 @@ function visualise_protein_structure() {
     global['stage'] = stage;
 
 
-    $('#spin_protein').change(function() {
-        if (this.checked) {
-            stage.toggleSpin();
+    $('#spin_protein').on('click',function() {
+        if($(this).hasClass("btn-outline-secondary")){
+            $(this).removeClass("btn-outline-secondary");
+            $(this).addClass("btn-secondary");
         }
-        else {
-            stage.toggleSpin();
+        else{
+            $(this).removeClass("btn-secondary");
+            $(this).addClass("btn-outline-secondary");
         }
+        stage.toggleSpin();
     });
 
     $('#show_msh6, #show_msh2, #show_dna').change(function(){
