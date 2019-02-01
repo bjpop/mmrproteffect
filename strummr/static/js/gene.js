@@ -26,6 +26,18 @@ function visualise_protein_structure() {
         stage.toggleSpin();
     });
 
+    $("#screenshot").on("click", function (e) {
+        stage.makeImage({
+            factor: 1,
+            antialias: true,
+            trim: false,
+            transparent: true
+        }).then(function (blob) {
+            NGL.download(blob, "screenshot.png");
+        });
+    });
+
+
     $('#show_msh6, #show_msh2, #show_dna').change(function(){
         toggle_component($(this).prop("name"),this.checked);
     });
