@@ -121,12 +121,12 @@ var gene_to_pdb_chain = {
     "MSH6": ":B",
 };
 
-function highlight_variant_in_structure(protein_pos) {
+function highlight_variant_in_structure(protein_pos, insight_class) {
     // Don't highlight variants that are already highlighted
     var highlighted_variants = global['highlighted_variants'];
     if (!(protein_pos in highlighted_variants)) {
         var gene_symbol = global['gene_symbol'];
-        var colour = [1.0, 0, 0, 0.5];
+        var colour = new NGL.Color(insight_class_colour(insight_class));
         var radius = 5;
         var pdb_chain = gene_to_pdb_chain[gene_symbol];
         var shape_component = highlight_residue(radius, colour, pdb_chain, protein_pos); 
@@ -318,7 +318,7 @@ function show_variants_table() {
 
     variants_table.on('select', function (e, dt, type, indexes) {
         var row = table.rows(indexes).data()[0];
-        highlight_variant_in_structure(row['protein_position']);
+        highlight_variant_in_structure(row['protein_position'], row['insight_class']);
     })
     .on('deselect', function ( e, dt, type, indexes ) {
         var row = table.rows(indexes).data()[0];
