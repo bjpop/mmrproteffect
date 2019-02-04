@@ -115,7 +115,7 @@ def all_variants_page():
 
 @app.route("/variants_data")
 def variants_data():
-    variants = Data.data
+    variants = [item for item in Data.data if item['gene'] == flask.request.args.get('gene','')]
     return flask.jsonify(data=variants)
 
 @app.route("/pdb")

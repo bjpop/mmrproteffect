@@ -742,7 +742,7 @@ function main(gene_symbol) {
     $.ajax({
         type: "GET",
         url: "/variants_data",
-        //data: myusername,
+        data: {'gene':gene_symbol},
         cache: false,
         success: function(response) {
             // keep only variants relevant to the gene of interest
