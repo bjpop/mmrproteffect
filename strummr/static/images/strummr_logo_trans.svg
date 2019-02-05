@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="92px" height="101px" viewBox="0 0 92 101" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>strummr_logo</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-14.3%" y="-12.9%" width="128.6%" height="125.8%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.607892215   0 0 0 0 0.607803345   0 0 0 0 0.607922554  0 0 0 1 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#FAD961" offset="0%"></stop>
+            <stop stop-color="#F76B1C" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#B4EC51" offset="0%"></stop>
+            <stop stop-color="#429321" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#F5515F" offset="0%"></stop>
+            <stop stop-color="#9F041B" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="55.0266944%" y1="109.343358%" x2="50%" y2="0%" id="linearGradient-5">
+            <stop stop-color="#3023AE" offset="0%"></stop>
+            <stop stop-color="#C86DD7" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M46.5,69.5 L56,44" id="Line" stroke="#9B9B9B" stroke-width="2" stroke-linecap="square" transform="translate(51.000000, 57.000000) scale(-1, 1) translate(-51.000000, -57.000000) "></path>
+        <path d="M46.5,22.5 L68,44" id="Line" stroke="#9B9B9B" stroke-width="2" stroke-linecap="square" transform="translate(57.000000, 33.000000) scale(-1, 1) translate(-57.000000, -33.000000) "></path>
+        <path d="M20,44 L45.5,38.5" id="Line" stroke="#9B9B9B" stroke-width="2" stroke-linecap="square" transform="translate(33.000000, 41.000000) scale(-1, 1) translate(-33.000000, -41.000000) "></path>
+        <g id="noun_Guitar-Pick_407369_000000" filter="url(#filter-1)" transform="translate(4.000000, 2.000000)" fill="#9B9B9B" fill-rule="nonzero">
+            <path d="M42,92.572 C20.583,92.572 0.308,45.103 0.308,27.338 C0.308,10.412 15.894,0.307 42,0.307 C68.106,0.307 83.691,10.412 83.691,27.338 C83.691,45.104 63.417,92.572 42,92.572 Z M42,4.156 C6.886,4.156 4.157,21.9 4.157,27.339 C4.157,45.151 24.357,88.725 42,88.725 C59.643,88.725 79.844,45.15 79.844,27.338 C79.844,21.9 77.114,4.156 42,4.156 Z" id="Shape"></path>
+        </g>
+        <circle id="Oval" fill="url(#linearGradient-2)" cx="67.5" cy="22.5" r="6.5"></circle>
+        <circle id="Oval" fill="url(#linearGradient-3)" cx="55.5" cy="69.5" r="6.5"></circle>
+        <circle id="Oval" fill="url(#linearGradient-4)" cx="20.5" cy="38.5" r="6.5"></circle>
+        <circle id="Oval" fill="url(#linearGradient-5)" cx="46" cy="44" r="13"></circle>
+    </g>
+</svg>

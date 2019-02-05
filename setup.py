@@ -14,7 +14,8 @@ setup(
     author_email='bjpope@unimelb.edu.au',
     packages=['strummr'],
     package_dir={'strummr': 'strummr'},
-    package_data={'strummr': ['templates/*.html', 'static/js/*.js', 'static/css/*.css', 'static/images/*.png']},
+    package_data={'strummr': ['templates/*.html', 'static/js/*.js',
+        'static/css/*.css', 'static/images/*.png', 'static/images/*.svg']},
     entry_points={
         'console_scripts': ['strummr = strummr.strummr:main']
     },
