@@ -238,6 +238,7 @@ function initialise_pdb_component(component) {
 
 function show_variants_table() {
     var variants_table = $('#variants_table').DataTable({
+/*
         "initComplete": function() {
             this.api().columns([0, 3, 4]).every(function() {
                 var that = this;
@@ -270,15 +271,18 @@ function show_variants_table() {
                 });
             });
         },
+*/
         "data": global_variant_information,
         "order": [
             [0, "asc"]
         ],
+        "scrollX": true,
         "pageLength": 10,
         "lengthMenu": [
             [10, 20, 50, 100],
             [10, 20, 50, 100]
         ],
+        "autoWidth": false, // Needed to get column width displayed correctly, see comments below about redraw
         "select": {
             style: 'multi'
         },
@@ -315,6 +319,11 @@ function show_variants_table() {
         }]
     });
 
+    // The below code is needed to get the DataTable to re-draw itself to get the
+    // column widths correct. See https://github.com/DataTables/Responsive/issues/40
+    // and http://stackoverflow.com/questions/8278981/datatables-on-the-fly-resizing/39157482#39157482
+    $($.fn.dataTable.tables( true ) ).css('width', '100%');
+    $($.fn.dataTable.tables( true ) ).DataTable().columns.adjust().draw();
 
     variants_table.on('select', function (e, dt, type, indexes) {
         var row = table.rows(indexes).data()[0];
@@ -374,6 +383,7 @@ function gene_metadata(gene_symbol) {
     $("#insight_link").html(make_insight_url(gene_symbol));
 }
 
+/*
 function is_class_selected(insight_class) {
     switch (insight_class) {
         case "1":
@@ -392,7 +402,54 @@ function is_class_selected(insight_class) {
             return false;
     }
 }
+*/
 
+function is_class_selected(variant_class) {
+    // 
+    var selections = $('#lollipop_class option:selected');
+    var selected_classes = [];
+    $(selections).each(function() {
+        selected_classes.push($(this).val());
+    });
+    for (var i = 0; i < selected_classes.length; i++) {
+        var this_selected_class = selected_classes[i];
+        switch (this_selected_class) {
+            case "N/A":
+               if (variant_class === "N/A") {
+                   return true;
+               }
+               break;
+            case "1":
+               if (variant_class === "1") {
+                   return true; 
+               }
+               break;
+            case "2":
+               if (variant_class === "2") {
+                   return true; 
+               }
+               break;
+            case "3":
+               if (variant_class === "3") {
+                   return true; 
+               }
+               break;
+            case "4":
+               if (variant_class === "4") {
+                   return true; 
+               }
+               break;
+            case "5":
+               if (variant_class === "5") {
+                   return true; 
+               }
+               break;
+        } 
+    }
+    return false;
+}
+
+/*
 function is_impact_selected(impact) {
     switch (impact) {
         case "LOW":
@@ -408,6 +465,89 @@ function is_impact_selected(impact) {
         default:
             return false;
     }
+}
+*/
+function is_impact_selected(impact) {
+    var selections = $('#lollipop_impact option:selected');
+    var is = [];
+    $(selections).each(function() {
+        is.push($(this).val());
+    });
+    for (var i = 0; i < is.length; i++) {
+        var selected_impact = is[i];
+        switch (selected_impact) {
+            case "N/A":
+               if (impact === "N/A") {
+                   return true;
+               }
+               break;
+            case "Low":
+               if (impact === "LOW") {
+                   return true; 
+               }
+               break;
+            case "Moderate":
+               if (impact === "MODERATE") {
+                   return true; 
+               }
+              break;
+            case "Modifier":
+               if (impact === "MODIFIER") {
+                  return true;
+               }
+               break;
+            case "High":
+               if (impact === "HIGH") {
+                  return true;
+               }
+               break;
+        } 
+    }
+    return false;
+}
+
+function is_consequence_selected(consequence) {
+    var selections = $('#lollipop_consequence option:selected');
+    var cs = [];
+    $(selections).each(function() {
+        cs.push($(this).val());
+    });
+    for (var i = 0; i < cs.length; i++) {
+        var selected_consequence = cs[i];
+        switch (selected_consequence) {
+            case "Missense":
+               if (consequence.includes("missense")) {
+                   return true;
+               }
+               break;
+            case "Stop gained":
+               if (consequence.includes("stop_gained")) {
+                   return true; 
+               }
+               break;
+            case "Splice":
+               if (consequence.includes("splice")) {
+                   return true; 
+               }
+              break;
+            case "Frameshift":
+               if (consequence.includes("frameshift")) {
+                  return true;
+               }
+               break;
+            case "Start lost":
+               if (consequence.includes("start_lost")) {
+                  return true;
+               }
+               break;
+            case "Synonymous":
+               if (consequence.includes("synonymous")) {
+                  return true;
+               }
+               break;
+        } 
+    }
+    return false;
 }
 
 function gene_lollipop(gene_symbol) {
@@ -427,7 +567,9 @@ function gene_lollipop(gene_symbol) {
     var variants = [];
     for (var i = 0; i < global_variant_information.length; i++) {
         var v = global_variant_information[i];
-        if (v.gene == gene_symbol && is_class_selected(v.insight_class) && is_impact_selected(v.impact)) {
+        if (v.gene == gene_symbol && (is_class_selected(v.insight_class)
+                                      || is_impact_selected(v.impact)
+                                      || is_consequence_selected(v.consequence))) {
             var this_colour = insight_class_colour(v.insight_class);
             var position_integer = parseInt(v.protein_position, 10);
 	    if (position_integer) {
@@ -711,11 +853,15 @@ function main(gene_symbol) {
     global['gene_symbol'] = gene_symbol;
 
     /* event handlers */
-    $(".lollipop_class").change(function() {
+    $('#lollipop_class').on("changed.bs.select", function() {
         gene_lollipop(gene_symbol);
     });
 
-    $(".lollipop_impact").change(function() {
+    $('#lollipop_consequence').on("changed.bs.select", function() {
+        gene_lollipop(gene_symbol);
+    });
+
+    $('#lollipop_impact').on("changed.bs.select", function() {
         gene_lollipop(gene_symbol);
     });
 

@@ -29,226 +29,192 @@
     <div class="card-body">
         <div id="lollipop_plot_div" class="collapse show">
 
-	    <div class="form-group">
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_na">Class N/A
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_1" checked>Class 1
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_2" checked>Class 2
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_3">Class 3
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_4" checked>Class 4
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_class" id="lollipop_class_5" checked>Class 5
-                    </label>
-                </div>
-	    </div>
-	    <div class="form-group">
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_impact" id="lollipop_impact_na">Unknown
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_impact" id="lollipop_impact_low">Low
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_impact" id="lollipop_impact_moderate" checked>Moderate
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_impact" id="lollipop_impact_modifier">Modifier
-                    </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input lollipop_impact" id="lollipop_impact_high" checked>High
-                    </label>
-                </div>
-            </div>
             <div id="lollipop_plot"></div>
-        </div>
-    </div>
-</div>
 
-<div class="card my-5">
-    <div class="card-header">
-        <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#protein_structure_div" aria-expanded="true" aria-controls="#protein_structure_div">
-            Hide/Show
-        </button>
-        <h5>Protein Structure for {{symbol}}</h5>
-    </div>
-    <div class="card-body">
-        <div id="protein_structure_div" class="collapse show">
-            <div class="row">
-                <div class="col">
-                    <div class="border" id="protein_structure_viewport" style="width:500px; height:500px;"></div>
-                </div>
-                <div class="col">
-                    <div class="row">
-                        <div class="col">
-                            <h5>Controls</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-check-inline">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" id="show_msh6" name="MSH6" checked>Show MSH6
-                                </label>
-                            </div>
-                            <div class="form-check-inline">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" id="show_msh2" name="MSH2" checked>Show MSH2
-                                </label>
-                            </div>
-                            <div class="form-check-inline">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" id="show_dna" name="DNA" checked>Show DNA
-                                </label>
-                            </div>
-                            <div class="form-check-inline">
-                                <label class="form-check-label">
-                                    <input type="checkbox" class="form-check-input" id="show_labels">Show Labels
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <hr/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h5>Actions</h5>
-                        </div>
-                    </div>
-                    <div class="row" style="margin-bottom:10px;">
-                        <div class="col">
-                            <button class="btn btn-outline-secondary" type="button" id="spin_protein"><i class="fas fa-sync-alt"></i> Spin</button>
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-outline-secondary" type="button" id="screenshot"><i class="fas fa-camera"></i> Screenshot</button>
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-outline-secondary" type="button" id="fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-outline-secondary" type="button" id="help"  data-toggle="collapse" data-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp"><i class="fas fa-question-circle"></i> Help</button>
-                        </div>
-                    </div>
-                    <div id="collapseHelp" class="row collapse">
-                        <div class="col">
-                            <div class="alert alert-info" role="alert">
-                                <p><span class="badge badge-secondary">left-click + drag</span> Rotate</p>
-                                <p><span class="badge badge-secondary">right-click + drag</span> Translate</p>
-                                <p><span class="badge badge-secondary">mouse wheel</span> Zoom</p>
-                                <p><span class="badge badge-secondary">click on structure</span> Center on clicked region</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <hr/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <button class="btn btn-default" type="button" id="reset_visualisation_button"><i class="fas fa-redo"></i> Reset</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="lollipop_class">Class</label>
+                <select id="lollipop_class" class="selectpicker" multiple data-selected-text-format="count > 3">
+                    <option>N/A</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+
+                <label for="lollipop_impact">Impact</label>
+                <select id="lollipop_impact" class="selectpicker" multiple data-selected-text-format="count > 2">
+                    <option>N/A</option>
+                    <option>Low</option>
+                    <option>Moderate</option>
+                    <option>Modifier</option>
+                    <option>High</option>
+                </select>
+
+                <label for="lollipop_consequence">Consequence</label>
+                <select id="lollipop_consequence" class="selectpicker" multiple data-selected-text-format="count > 2">
+                    <option selected="selected">Missense</option>
+                    <option>Stop gained</option>
+                    <option>Splice</option>
+                    <option>Frameshift</option>
+                    <option>Start lost</option>
+                    <option>Synonymous</option>
+                </select>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card my-5">
-    <div class="card-header">
-        <div class="float-right">
-            <button class="btn btn-outline-secondary btn-sm" type="button" id="clear_all_selected_variants">Clear Selections</button>
-            <button class="btn btn-outline-primary btn-sm" type="button" data-toggle="collapse" data-target="#variants_table_div" aria-expanded="true" aria-controls="#variants_table_div">
-                Hide/Show
-            </button>
-	</div>
-        <h5>Variants for {{symbol}}</h5>
-    </div>
-    <div class="card-body">
-        <div id="variants_table_div" class="collapse show">
-            <table id="variants_table" class="table table-striped table-sm table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Pos</th>
-                        <th scope="col">Ref</th>
-                        <th scope="col">Alt</th>
-                        <th scope="col">HGVSc</th>
-                        <th scope="col">HGVSp</th>
-                        <th scope="col">Class</th>
-                        <th scope="col">Details</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
+        <div class="card my-5">
+            <div class="card-header">
+                <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#protein_structure_div" aria-expanded="true" aria-controls="#protein_structure_div">
+                    Hide/Show
+                </button>
+                <h5>Protein Structure for {{symbol}}</h5>
+            </div>
+            <div class="card-body">
+                <div id="protein_structure_div" class="collapse show">
+                    <div class="row">
+                        <div class="col">
+                            <div class="border" id="protein_structure_viewport" style="width:500px; height:500px;"></div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <h5>Controls</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" id="show_msh6" name="MSH6" checked>Show MSH6
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" id="show_msh2" name="MSH2" checked>Show MSH2
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" id="show_dna" name="DNA" checked>Show DNA
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" id="show_labels">Show Labels
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h5>Actions</h5>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="spin_protein"><i class="fas fa-sync-alt"></i> Spin</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="screenshot"><i class="fas fa-camera"></i> Screenshot</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="help" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp"><i class="fas fa-question-circle"></i>
+                                        Help</button>
+                                </div>
+                            </div>
+                            <div id="collapseHelp" class="row collapse">
+                                <div class="col">
+                                    <div class="alert alert-info" role="alert">
+                                        <p><span class="badge badge-secondary">left-click + drag</span> Rotate</p>
+                                        <p><span class="badge badge-secondary">right-click + drag</span> Translate</p>
+                                        <p><span class="badge badge-secondary">mouse wheel</span> Zoom</p>
+                                        <p><span class="badge badge-secondary">click on structure</span> Center on clicked region</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-default" type="button" id="reset_visualisation_button"><i class="fas fa-redo"></i> Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-{% if symbol == 'MSH2' %}
-<script type="text/javascript" src="/static/js/msh2_pfam.js"></script>
-{% endif %}
-{% if symbol == 'MSH6' %}
-<script type="text/javascript" src="/static/js/msh6_pfam.js"></script>
-{% endif %}
-<script type="text/javascript" src="/static/js/gene.js?version=1.5"></script>
+        <div class="card my-5">
+            <div class="card-header">
+                <div class="float-right">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" id="clear_all_selected_variants">Clear Selections</button>
+                    <button class="btn btn-outline-primary btn-sm" type="button" data-toggle="collapse" data-target="#variants_table_div" aria-expanded="true" aria-controls="#variants_table_div">
+                        Hide/Show
+                    </button>
+                </div>
+                <h5>Variants for {{symbol}}</h5>
+            </div>
+            <div class="card-body">
+                <div id="variants_table_div" class="collapse show">
+                    <table id="variants_table" class="table table-striped table-sm table-hover" >
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Pos</th>
+                                <th scope="col">Ref</th>
+                                <th scope="col">Alt</th>
+                                <th scope="col">HGVSc</th>
+                                <th scope="col">HGVSp</th>
+                                <th scope="col">Class</th>
+                                <th scope="col">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <!--
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                        -->
+                    </table>
+                </div>
+            </div>
+        </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        main("{{ symbol }}")
-    });
-</script>
+        {% if symbol == 'MSH2' %}
+        <script type="text/javascript" src="/static/js/msh2_pfam.js"></script>
+        {% endif %}
+        {% if symbol == 'MSH6' %}
+        <script type="text/javascript" src="/static/js/msh6_pfam.js"></script>
+        {% endif %}
+        <script type="text/javascript" src="/static/js/gene.js?version=3.992"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                main("{{ symbol }}")
+            });
+        </script>
 
 
-{% endblock %}
+        {% endblock %}

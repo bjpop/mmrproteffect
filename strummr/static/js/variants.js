@@ -1,6 +1,7 @@
 function show_variants_table() {
 
     var variants_table = $('#variants_table').DataTable({
+        /*
         "initComplete": function() {
 
             this.api().columns([2, 5, 6]).every(function() {
@@ -34,12 +35,13 @@ function show_variants_table() {
                 });
             });
         },
-        //"ajax": "{{ url_for('variants_data') }}",
+        */
         "ajax": "/variants_data",
-        //"scrollX": true,
         "order": [
             [0, "asc"]
         ],
+        "scrollX": true,
+	"autoWidth": false,
         "pageLength": 20,
         "lengthMenu": [
             [10, 20, 50, 100],
@@ -85,4 +87,11 @@ function show_variants_table() {
           }
 	]
     });
+
+    // The below code is needed to get the DataTable to re-draw itself to get the
+    // column widths correct. See https://github.com/DataTables/Responsive/issues/40
+    // and http://stackoverflow.com/questions/8278981/datatables-on-the-fly-resizing/39157482#39157482
+    $($.fn.dataTable.tables( true ) ).css('width', '100%');
+    $($.fn.dataTable.tables( true ) ).DataTable().columns.adjust().draw();
+
 }
