@@ -552,6 +552,7 @@ function is_consequence_selected(consequence) {
 
 function gene_lollipop(gene_symbol) {
 
+    // XXX these widtha and height values probably shouldn't be hard-coded here
     var display_width = 1100;
     var display_height = 200;
     var target_div = "#lollipop_plot";
@@ -848,6 +849,63 @@ function clear_selected_variants() {
     global['highlighted_variants'] = {};
 }
 
+function plot_population_frequencies(gene_symbol) {
+
+    frequecies_per_class = {};
+
+    var variants = [];
+    for (var i = 0; i < global_variant_information.length; i++) {
+        var v = global_variant_information[i];
+        if (v.gene == gene_symbol) {
+            var this_af = v.gnomad_af;
+            if (this_af) {
+                this_af = parseFloat(this_af);
+                var this_class = v.insight_class; 
+                if (!(this_class in frequecies_per_class)) {
+                    frequecies_per_class[this_class] = [];
+                }
+                frequecies_per_class[this_class].push(this_af);
+            }
+        }
+    }
+
+    var insight_classes = ['N/A', '1', '2', '3', '4', '5'];
+    var plot_traces = []; 
+
+    insight_classes.forEach(function (class_name) {
+        if (class_name in frequecies_per_class) {
+            var this_class_frequencies = frequecies_per_class[class_name];
+        }
+        else {
+            var this_class_frequencies = [];
+        }
+        var this_trace = {
+            y: this_class_frequencies,
+            type: 'box',
+            name: 'Class ' + class_name,
+            boxpoints: 'all',
+            jitter: 0.3,
+            pointpos: -1.8,
+        };
+        plot_traces.push(this_trace);
+    });
+
+    var layout = {
+        title: { text:'gnomAD population frequency versus InSiGHT class' },
+        yaxis: {
+            type: 'log',
+            autorange: true,
+            title: 'gnomAD population frequency (log scale)',
+        },
+        xaxis: {
+            title: 'InSiGHT class',
+        },
+	height: 600
+    };
+    
+    Plotly.newPlot('population_frequencies', plot_traces, layout);
+}
+
 function main(gene_symbol) {
 
     global['gene_symbol'] = gene_symbol;
@@ -898,6 +956,7 @@ function main(gene_symbol) {
             table = show_variants_table();
             global['variants_table'] = table;
             visualise_protein_structure();
+            plot_population_frequencies(gene_symbol);
         }
     });
 }
