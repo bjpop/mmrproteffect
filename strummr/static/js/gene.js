@@ -4,6 +4,7 @@ var global = {
    'variants_table': null,       // the data table of variants for this gene
    'highlighted_variants': {},   // map from variant protein position to highlight component 
    'gene_symbol': null,          // name of the gene we are working with 
+   'variant_information': [],    // all the rows of variant information 
 };
  
 function visualise_protein_structure() {
@@ -272,7 +273,8 @@ function show_variants_table() {
             });
         },
 */
-        "data": global_variant_information,
+        //"data": global_variant_information,
+        "data": global['variant_information'],
         "order": [
             [0, "asc"]
         ],
@@ -337,7 +339,7 @@ function show_variants_table() {
     return variants_table;
 }
 
-var global_variant_information = [];
+//var global_variant_information = [];
 
 function insight_class_colour(insight_class) {
     switch (insight_class) {
@@ -566,8 +568,9 @@ function gene_lollipop(gene_symbol) {
     var protein_info = get_protein_info(gene_symbol);
 
     var variants = [];
-    for (var i = 0; i < global_variant_information.length; i++) {
-        var v = global_variant_information[i];
+    //for (var i = 0; i < global_variant_information.length; i++) {
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
         if (v.gene == gene_symbol && (is_class_selected(v.insight_class)
                                       || is_impact_selected(v.impact)
                                       || is_consequence_selected(v.consequence))) {
@@ -854,8 +857,10 @@ function plot_population_frequencies(gene_symbol) {
     frequecies_per_class = {};
 
     var variants = [];
-    for (var i = 0; i < global_variant_information.length; i++) {
-        var v = global_variant_information[i];
+    //for (var i = 0; i < global_variant_information.length; i++) {
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        //var v = global_variant_information[i];
+        var v = global['variant_information'][i];
         if (v.gene == gene_symbol) {
             var this_af = v.gnomad_af;
             if (this_af) {
@@ -951,7 +956,8 @@ function main(gene_symbol) {
         success: function(response) {
             // keep only variants relevant to the gene of interest
             // XXX perhaps this should happen on the server?
-            global_variant_information = filter_variants_to_gene_and_protein(gene_symbol, response.data);
+            //global_variant_information = filter_variants_to_gene_and_protein(gene_symbol, response.data);
+            global['variant_information'] = filter_variants_to_gene_and_protein(gene_symbol, response.data);
             gene_lollipop(gene_symbol);
             table = show_variants_table();
             global['variants_table'] = table;

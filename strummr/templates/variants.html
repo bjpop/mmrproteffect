@@ -4,24 +4,29 @@
 {% block content %}
 {{ super () }}
 
-<h1 class="display-4 my-5">All Variants</h1>
+<!-- <h1 class="display-4 my-5">All Variants</h1> -->
 
-<table id="variants_table" class="table table-striped table-sm">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Gene</th>
-      <th scope="col">Chrom</th>
-      <th scope="col">Pos</th>
-      <th scope="col">Ref</th>
-      <th scope="col">Alt</th>
-      <th scope="col">HGVSc</th>
-      <th scope="col">HGVSp</th>
-      <th scope="col">Class</th>
-      <th scope="col">Details</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-  <!--
+<div class="card my-5">
+    <div class="card-header">
+        <h5>All Variants</h5>
+    </div>
+    <div class="card-body">
+        <table id="variants_table" class="table table-striped table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Gene</th>
+                    <th scope="col">Chrom</th>
+                    <th scope="col">Pos</th>
+                    <th scope="col">Ref</th>
+                    <th scope="col">Alt</th>
+                    <th scope="col">HGVSc</th>
+                    <th scope="col">HGVSp</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Details</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <!--
   <tfoot>
       <tr>
          <th></th>
@@ -36,14 +41,25 @@
       </tr>
   </tfoot>
   -->
-</table>
+        </table>
+    </div>
+</div>
 
-<script type="text/javascript" src="/static/js/variants.js"></script>
+<div class="card my-5">
+    <div class="card-header">
+        <h5>Population frequency of variants in MSH2 and MSH6</h5>
+    </div>
+    <div class="card-body">
+        <div id="population_frequencies"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/js/variants.js?version=0.1"></script>
 
 <script>
-$(document).ready(function () {
-  show_variants_table();
-});
+    $(document).ready(function() {
+        main();
+    });
 </script>
 
 {% endblock %}
