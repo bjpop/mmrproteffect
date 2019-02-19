@@ -5,60 +5,29 @@ var global = {
 function show_variants_table() {
 
     var variants_table = $('#variants_table').DataTable({
-        /*
-        "initComplete": function() {
-
-            this.api().columns([2, 5, 6]).every(function() {
-                var that = this;
-                var column = this;
-                var textinput = $('<input type="text" placeholder="Search"/>')
-                    .appendTo($(column.footer()).empty())
-                    .on('keyup change', function() {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-            });
-
-            this.api().columns([0, 1, 3, 4, 7]).every(function() {
-                var column = this;
-                var select = $('<select><option value="" disabled selected hidden>Search</option></select>')
-                    .appendTo($(column.footer()).empty())
-                    .on('change', function() {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    });
-
-                column.data().unique().sort().each(function(d, j) {
-                    select.append('<option value="' + d + '">' + d + '</option>')
-                });
-            });
-        },
-        */
-        //"ajax": "/variants_data",
+        "dom": 'Blfrtip',
+        buttons: [{ 
+            extend: "colvis",
+            className: "btn-sm btn-outline-primary",
+            titleAttr: 'Column visibility',
+            text: 'Columns',
+        }],
         "data": global['variant_information'],
         "order": [
-            [0, "asc"]
+            [0, "asc"],  // sort by gene name first
+            [2, "asc"],  // then sort by genome position second
         ],
         "scrollX": true,
 	"autoWidth": false,
-        "pageLength": 20,
-        "lengthMenu": [
-            [10, 20, 50, 100],
-            [10, 20, 50, 100]
-        ],
-        "columns": [{
-                data: "gene"
+        "pageLength": 25,
+        "columns": [
+            {   
+                data: "gene",
             },
-            {
-                data: "chrom"
+            {   
+                data: "chrom",
             },
-            {
+            {   
                 data: "pos"
             },
             {
@@ -75,6 +44,46 @@ function show_variants_table() {
             },
             {
                 data: "insight_class"
+            },
+            {
+                data: "genetic_origin",
+                visible: false,
+            },
+            {
+                data: "protein_position",
+                visible: false,
+            },
+            {
+                data: "exon",
+                visible: false,
+            },
+            {
+                data: "intron",
+                visible: false,
+            },
+            {
+                data: "gnomad_af",
+                visible: false,
+            },
+            {
+                data: "num_homozygotes",
+                visible: false,
+            },
+            {
+                data: "consequence",
+                visible: false,
+            },
+            {
+                data: "impact",
+                visible: false,
+            },
+            {
+                data: "cadd_phred",
+                visible: false,
+            },
+            {
+                data: "revel_score",
+                visible: false,
             },
             {
                 data: null
@@ -161,13 +170,10 @@ function plot_population_frequencies() {
 
 }
 
-
-
 function main () {
   $.ajax({
         type: "GET",
         url: "/variants_data",
-//        data: {'gene':gene_symbol},
         cache: false,
         success: function(response) {
             global['variant_information'] = response.data;
@@ -176,5 +182,4 @@ function main () {
             plot_population_frequencies();
         }
     });
-
 }

@@ -4,57 +4,64 @@
 {% block content %}
 {{ super () }}
 
-<!-- <h1 class="display-4 my-5">All Variants</h1> -->
-
 <div class="card my-5">
     <div class="card-header">
+        <div class="float-right">
+            <button class="btn btn-outline-primary btn-sm" type="button" data-toggle="collapse" data-target="#variants_table_div" aria-expanded="true" aria-controls="#variants_table_div">
+                Hide/Show
+            </button>
+        </div>
         <h5>All Variants</h5>
     </div>
     <div class="card-body">
-        <table id="variants_table" class="table table-striped table-sm">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Gene</th>
-                    <th scope="col">Chrom</th>
-                    <th scope="col">Pos</th>
-                    <th scope="col">Ref</th>
-                    <th scope="col">Alt</th>
-                    <th scope="col">HGVSc</th>
-                    <th scope="col">HGVSp</th>
-                    <th scope="col">Class</th>
-                    <th scope="col">Details</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-            <!--
-  <tfoot>
-      <tr>
-         <th></th>
-         <th></th>
-         <th></th>
-         <th></th>
-         <th></th>
-         <th></th>
-         <th></th>
-         <th></th>
-         <th></th>
-      </tr>
-  </tfoot>
-  -->
-        </table>
+        <div id="variants_table_div" class="collapse show">
+            <table id="variants_table" class="table table-striped table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Gene</th>
+                        <th scope="col">Chrom</th>
+                        <th scope="col">Pos</th>
+                        <th scope="col">Ref</th>
+                        <th scope="col">Alt</th>
+                        <th scope="col">HGVSc</th>
+                        <th scope="col">HGVSp</th>
+                        <th scope="col">Class</th>
+                        <th scope="col">Origin</th>
+                        <th scope="col">Protein pos</th>
+                        <th scope="col">Exon</th>
+                        <th scope="col">Intron</th>
+                        <th scope="col">GnomAD</th>
+                        <th scope="col">Homozygotes</th>
+                        <th scope="col">Consequence</th>
+                        <th scope="col">Impact</th>
+                        <th scope="col">CADD</th>
+                        <th scope="col">Revel</th>
+                        <th scope="col">Details</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div class="card my-5">
     <div class="card-header">
+        <div class="float-right">
+            <button class="btn btn-outline-primary btn-sm" type="button" data-toggle="collapse" data-target="#population_freq_chart_div" aria-expanded="true" aria-controls="#population_freq_chart_div">
+                Hide/Show
+            </button>
+        </div>
         <h5>Population frequency of variants in MSH2 and MSH6</h5>
     </div>
     <div class="card-body">
-        <div id="population_frequencies"></div>
+        <div id="population_freq_chart_div" class="collapse show">
+            <div id="population_frequencies"></div>
+        </div>
     </div>
 </div>
 
-<script type="text/javascript" src="/static/js/variants.js?version=0.1"></script>
+<script type="text/javascript" src="/static/js/variants.js?version=1.0"></script>
 
 <script>
     $(document).ready(function() {

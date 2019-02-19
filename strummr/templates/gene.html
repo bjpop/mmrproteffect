@@ -4,7 +4,6 @@
 {% block content %}
 {{ super () }}
 
-
 <h1 class="display-4 my-5">{{ symbol }}</h1>
 
 <hr>
@@ -174,29 +173,28 @@
             <table id="variants_table" class="table table-striped table-sm table-hover">
                 <thead class="thead-dark">
                     <tr>
+                        <th scope="col">Gene</th>
+                        <th scope="col">Chrom</th>
                         <th scope="col">Pos</th>
                         <th scope="col">Ref</th>
                         <th scope="col">Alt</th>
                         <th scope="col">HGVSc</th>
                         <th scope="col">HGVSp</th>
                         <th scope="col">Class</th>
+                        <th scope="col">Origin</th>
+                        <th scope="col">Protein pos</th>
+                        <th scope="col">Exon</th>
+                        <th scope="col">Intron</th>
+                        <th scope="col">GnomAD</th>
+                        <th scope="col">Homozygotes</th>
+                        <th scope="col">Consequence</th>
+                        <th scope="col">Impact</th>
+                        <th scope="col">CADD</th>
+                        <th scope="col">Revel</th>
                         <th scope="col">Details</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
-                <!--
-                        <tfoot>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                        -->
             </table>
         </div>
     </div>
@@ -224,13 +222,12 @@
 {% if symbol == 'MSH6' %}
 <script type="text/javascript" src="/static/js/msh6_pfam.js"></script>
 {% endif %}
-<script type="text/javascript" src="/static/js/gene.js?version=3.9998"></script>
+<script type="text/javascript" src="/static/js/gene.js?version=6.7"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
         main("{{ symbol }}")
     });
 </script>
-
 
 {% endblock %}

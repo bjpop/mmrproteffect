@@ -95,7 +95,6 @@ function get_residue_coords(structure, chain_id, residue) {
    var ys = [];
    var zs = [];
 
-   //var selection = new NGL.Selection( ":A and 1");
    var selection_string = chain_id + " and " + residue;
    var selection = new NGL.Selection(selection_string);
    structure.eachAtom(function(ap) {
@@ -239,56 +238,41 @@ function initialise_pdb_component(component) {
 
 function show_variants_table() {
     var variants_table = $('#variants_table').DataTable({
-/*
-        "initComplete": function() {
-            this.api().columns([0, 3, 4]).every(function() {
-                var that = this;
-                var column = this;
-                var textinput = $('<input type="text" placeholder="Search"/>')
-                    .appendTo($(column.footer()).empty())
-                    .on('keyup change', function() {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-            });
-
-            this.api().columns([1, 2, 5]).every(function() {
-                var column = this;
-                var select = $('<select><option value="" disabled selected hidden>Search</option></select>')
-                    .appendTo($(column.footer()).empty())
-                    .on('change', function() {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    });
-
-                column.data().unique().sort().each(function(d, j) {
-                    select.append('<option value="' + d + '">' + d + '</option>')
-                });
-            });
-        },
-*/
-        //"data": global_variant_information,
+        "dom": 'Blfrtip',
+        buttons: [
+            {
+               extend: "colvis",
+               className: "btn-sm btn-outline-primary",
+               titleAttr: 'Column visibility',
+               text: 'Columns'
+            },
+            {
+               extend: "copy",
+               className: "btn-sm btn-outline-primary",
+               titleAttr: 'Copy data',
+               text: 'Copy'
+            }
+        ],
         "data": global['variant_information'],
         "order": [
-            [0, "asc"]
+            [2, "asc"]  // sort by genome position by default
         ],
         "scrollX": true,
         "pageLength": 10,
-        "lengthMenu": [
-            [10, 20, 50, 100],
-            [10, 20, 50, 100]
-        ],
         "autoWidth": false, // Needed to get column width displayed correctly, see comments below about redraw
         "select": {
             style: 'multi'
         },
-        "columns": [{
+        "columns": [
+            {
+                data: "gene",
+                visible: false
+            },
+            {
+                data: "chrom",
+                visible: false
+            },
+            {
                 data: "pos"
             },
             {
@@ -305,6 +289,46 @@ function show_variants_table() {
             },
             {
                 data: "insight_class"
+            },
+            {
+                data: "genetic_origin",
+                visible: false,
+            },
+            {
+                data: "protein_position",
+                visible: false,
+            },
+            {
+                data: "exon",
+                visible: false,
+            },
+            {
+                data: "intron",
+                visible: false,
+            },
+            {
+                data: "gnomad_af",
+                visible: false,
+            },
+            {
+                data: "num_homozygotes",
+                visible: false,
+            },
+            {
+                data: "consequence",
+                visible: false,
+            },
+            {
+                data: "impact",
+                visible: false,
+            },
+            {
+                data: "cadd_phred",
+                visible: false,
+            },
+            {
+                data: "revel_score",
+                visible: false,
             },
             {
                 data: null
@@ -339,7 +363,6 @@ function show_variants_table() {
     return variants_table;
 }
 
-//var global_variant_information = [];
 
 function insight_class_colour(insight_class) {
     switch (insight_class) {
@@ -385,29 +408,7 @@ function gene_metadata(gene_symbol) {
     $("#insight_link").html(make_insight_url(gene_symbol));
 }
 
-/*
-function is_class_selected(insight_class) {
-    switch (insight_class) {
-        case "1":
-            return $('#lollipop_class_1').is(':checked');
-        case "2":
-            return $('#lollipop_class_2').is(':checked');
-        case "3":
-            return $('#lollipop_class_3').is(':checked');
-        case "4":
-            return $('#lollipop_class_4').is(':checked');
-        case "5":
-            return $('#lollipop_class_5').is(':checked');
-        case "N/A":
-            return $('#lollipop_class_na').is(':checked');
-        default:
-            return false;
-    }
-}
-*/
-
 function is_class_selected(variant_class) {
-    // 
     var selections = $('#lollipop_class option:selected');
     var selected_classes = [];
     $(selections).each(function() {
@@ -451,24 +452,6 @@ function is_class_selected(variant_class) {
     return false;
 }
 
-/*
-function is_impact_selected(impact) {
-    switch (impact) {
-        case "LOW":
-            return $('#lollipop_impact_low').is(':checked');
-        case "MODERATE":
-            return $('#lollipop_impact_moderate').is(':checked');
-        case "HIGH":
-            return $('#lollipop_impact_high').is(':checked');
-        case "MODIFIER":
-            return $('#lollipop_impact_modifier').is(':checked');
-        case "N/A":
-            return $('#lollipop_impact_na').is(':checked');
-        default:
-            return false;
-    }
-}
-*/
 function is_impact_selected(impact) {
     var selections = $('#lollipop_impact option:selected');
     var is = [];
@@ -554,7 +537,9 @@ function is_consequence_selected(consequence) {
 
 function gene_lollipop(gene_symbol) {
 
-    // XXX these widtha and height values probably shouldn't be hard-coded here
+    console.log("gene lollipop woohoo"); 
+
+    // XXX these width and height values probably shouldn't be hard-coded here
     var display_width = 1100;
     var display_height = 200;
     var target_div = "#lollipop_plot";
@@ -568,7 +553,6 @@ function gene_lollipop(gene_symbol) {
     var protein_info = get_protein_info(gene_symbol);
 
     var variants = [];
-    //for (var i = 0; i < global_variant_information.length; i++) {
     for (var i = 0; i < global['variant_information'].length; i++) {
         var v = global['variant_information'][i];
         if (v.gene == gene_symbol && (is_class_selected(v.insight_class)
@@ -836,6 +820,7 @@ function make_lollipop(total_width, total_height, margin, protein_length, region
         .attr("in", "SourceGraphic");
 }
 
+// XXX should we only consider variants with protein_position > 0?
 function filter_variants_to_gene_and_protein(gene, variants) {
     return variants.filter(item => item.gene == gene && item.protein_position.length > 0);
 }
@@ -857,9 +842,7 @@ function plot_population_frequencies(gene_symbol) {
     frequecies_per_class = {};
 
     var variants = [];
-    //for (var i = 0; i < global_variant_information.length; i++) {
     for (var i = 0; i < global['variant_information'].length; i++) {
-        //var v = global_variant_information[i];
         var v = global['variant_information'][i];
         if (v.gene == gene_symbol) {
             var this_af = v.gnomad_af;
@@ -916,15 +899,18 @@ function main(gene_symbol) {
     global['gene_symbol'] = gene_symbol;
 
     /* event handlers */
-    $('#lollipop_class').on("changed.bs.select", function() {
+    $('#lollipop_class').on("change", function(e) {
+        console.log("lollipop class");
         gene_lollipop(gene_symbol);
     });
 
-    $('#lollipop_consequence').on("changed.bs.select", function() {
+    $('#lollipop_consequence').on("change", function(e) {
+        console.log("lollipop consequence");
         gene_lollipop(gene_symbol);
     });
 
-    $('#lollipop_impact').on("changed.bs.select", function() {
+    $('#lollipop_impact').on("change", function(e) {
+        console.log("lollipop impact");
         gene_lollipop(gene_symbol);
     });
 
@@ -956,7 +942,6 @@ function main(gene_symbol) {
         success: function(response) {
             // keep only variants relevant to the gene of interest
             // XXX perhaps this should happen on the server?
-            //global_variant_information = filter_variants_to_gene_and_protein(gene_symbol, response.data);
             global['variant_information'] = filter_variants_to_gene_and_protein(gene_symbol, response.data);
             gene_lollipop(gene_symbol);
             table = show_variants_table();
