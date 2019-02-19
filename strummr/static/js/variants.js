@@ -6,12 +6,20 @@ function show_variants_table() {
 
     var variants_table = $('#variants_table').DataTable({
         "dom": 'Blfrtip',
-        buttons: [{ 
-            extend: "colvis",
-            className: "btn-sm btn-outline-primary",
-            titleAttr: 'Column visibility',
-            text: 'Columns',
-        }],
+        buttons: [
+            {
+               extend: "colvis",
+               className: "btn-sm btn-outline-primary",
+               titleAttr: 'Column visibility',
+               text: 'Columns'
+            },
+            {
+               extend: "copy",
+               className: "btn-sm btn-outline-primary",
+               titleAttr: 'Copy data',
+               text: 'Copy'
+            }
+        ],
         "data": global['variant_information'],
         "order": [
             [0, "asc"],  // sort by gene name first
