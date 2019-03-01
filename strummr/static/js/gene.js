@@ -331,6 +331,154 @@ function show_variants_table() {
                 visible: false,
             },
             {
+                data: "mtr",
+                visible: false,
+            },
+            {
+                data: "mtr_genemean",
+                visible: false,
+            },
+            {
+                data: "mtr_genemedian",
+                visible: false,
+            },
+            {
+                data: "diff_mtr_gene_mean",
+                visible: false,
+            },
+            {
+                data: "diff_mtr_gene_median",
+                visible: false,
+            },
+            {
+                data: "diff_mtr_genome_mean",
+                visible: false,
+            },
+            {
+                data: "diff_mtr_genome_median",
+                visible: false,
+            },
+            {
+                data: "ratio_mtr_gene_mean",
+                visible: false,
+            },
+            {
+                data: "ratio_mtr_gene_median",
+                visible: false,
+            },
+            {
+                data: "ratio_mtr_genome_mean",
+                visible: false,
+            },
+            {
+                data: "ratio_mtr_genome_median",
+                visible: false,
+            },
+            {
+                data: "ToPRO",
+                visible: false,
+            },
+            {
+                data: "ToGLY",
+                visible: false,
+            },
+            {
+                data: "FromPRO",
+                visible: false,
+            },
+            {
+                data: "FromGLY",
+                visible: false,
+            },
+            {
+                data: "Phi",
+                visible: false,
+            },
+            {
+                data: "Psi",
+                visible: false,
+            },
+            {
+                data: "Omega",
+                visible: false,
+            },
+            {
+                data: "PositivePhiGLY",
+                visible: false,
+            },
+            {
+                data: "provean",
+                visible: false,
+            },
+            {
+                data: "provean_pred",
+                visible: false,
+            },
+            {
+                data: "sift",
+                visible: false,
+            },
+            {
+                data: "sift_pred",
+                visible: false,
+            },
+            {
+                data: "dist_lig",
+                visible: false,
+            },
+            {
+                data: "dist_na",
+                visible: false,
+            },
+            {
+                data: "dist_ppi",
+                visible: false,
+            },
+            {
+                data: "pph2",
+                visible: false,
+            },
+            {
+                data: "pph2_prediction",
+                visible: false,
+            },
+            {
+                data: "mcsm_na",
+                visible: false,
+            },
+            {
+                data: "mcsm_ppi",
+                visible: false,
+            },
+            {
+                data: "ddg_encom",
+                visible: false,
+            },
+            {
+                data: "dds_encom",
+                visible: false,
+            },
+            {
+                data: "ddg_duet",
+                visible: false,
+            },
+            {
+                data: "ddg_dynamut",
+                visible: false,
+            },
+            {
+                data: "ddg_mcsm",
+                visible: false,
+            },
+            {
+                data: "ddg_sdm",
+                visible: false,
+            },
+            {
+                data: "predicted",
+                visible: true,
+            },
+            {
                 data: null
             },
         ],
