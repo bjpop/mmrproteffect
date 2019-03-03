@@ -1,12 +1,12 @@
 var global = {
-   'stage': null,                // overall object for protein visualisation
-   'pdb_component': null,        // component for the loaded PDB structure
-   'variants_table': null,       // the data table of variants for this gene
-   'highlighted_variants': {},   // map from variant protein position to highlight component 
-   'gene_symbol': null,          // name of the gene we are working with 
-   'variant_information': [],    // all the rows of variant information 
+    'stage': null, // overall object for protein visualisation
+    'pdb_component': null, // component for the loaded PDB structure
+    'variants_table': null, // the data table of variants for this gene
+    'highlighted_variants': {}, // map from variant protein position to highlight component
+    'gene_symbol': null, // name of the gene we are working with
+    'variant_information': [], // all the rows of variant information
 };
- 
+
 function visualise_protein_structure() {
 
     var stage = new NGL.Stage("protein_structure_viewport", {
@@ -15,47 +15,45 @@ function visualise_protein_structure() {
     global['stage'] = stage;
 
 
-    $('#spin_protein').on('click',function() {
-        if($(this).hasClass("btn-outline-secondary")){
+    $('#spin_protein').on('click', function() {
+        if ($(this).hasClass("btn-outline-secondary")) {
             $(this).removeClass("btn-outline-secondary");
             $(this).addClass("btn-secondary");
-        }
-        else{
+        } else {
             $(this).removeClass("btn-secondary");
             $(this).addClass("btn-outline-secondary");
         }
         stage.toggleSpin();
     });
 
-    $("#screenshot").on("click", function (e) {
+    $("#screenshot").on("click", function(e) {
         stage.makeImage({
             factor: 1,
             antialias: true,
             trim: false,
             transparent: true
-        }).then(function (blob) {
+        }).then(function(blob) {
             NGL.download(blob, "screenshot.png");
         });
     });
 
-    $("#fullscreen").on("click", function (e) {
+    $("#fullscreen").on("click", function(e) {
         stage.toggleFullscreen();
 
     });
 
-    $('#help').on('click',function() {
-        if($(this).hasClass("btn-outline-secondary")){
+    $('#help').on('click', function() {
+        if ($(this).hasClass("btn-outline-secondary")) {
             $(this).removeClass("btn-outline-secondary");
             $(this).addClass("btn-secondary");
-        }
-        else{
+        } else {
             $(this).removeClass("btn-secondary");
             $(this).addClass("btn-outline-secondary");
         }
     });
 
-    $('#show_msh6, #show_msh2, #show_dna').change(function(){
-        toggle_component($(this).prop("name"),this.checked);
+    $('#show_msh6, #show_msh2, #show_dna').change(function() {
+        toggle_component($(this).prop("name"), this.checked);
     });
 
     // Handle window resizing
@@ -73,46 +71,45 @@ function visualise_protein_structure() {
             });
             stage.loadFile(stringBlob, {
                 ext: "pdb",
-                //defaultRepresentation: false 
+                //defaultRepresentation: false
             }).then(initialise_pdb_component);
         }
     });
 }
 
 function average(arr) {
-   if (arr.length)
-   {
-       sum = arr.reduce(function(a, b) { return a + b; });
-       return sum / arr.length;
-   }
-   else {
-       return null;
-   }
+    if (arr.length) {
+        sum = arr.reduce(function(a, b) {
+            return a + b;
+        });
+        return sum / arr.length;
+    } else {
+        return null;
+    }
 }
 
 function get_residue_coords(structure, chain_id, residue) {
-   var xs = [];
-   var ys = [];
-   var zs = [];
+    var xs = [];
+    var ys = [];
+    var zs = [];
 
-   var selection_string = chain_id + " and " + residue;
-   var selection = new NGL.Selection(selection_string);
-   structure.eachAtom(function(ap) {
-       xs.push(ap.x);
-       ys.push(ap.y);
-       zs.push(ap.z);
-   }, selection)
+    var selection_string = chain_id + " and " + residue;
+    var selection = new NGL.Selection(selection_string);
+    structure.eachAtom(function(ap) {
+        xs.push(ap.x);
+        ys.push(ap.y);
+        zs.push(ap.z);
+    }, selection)
 
 
-   if (xs.length) {
-       var x = average(xs);
-       var y = average(ys);
-       var z = average(zs);
-       return [x, y, z];
-   }
-   else {
-       return null;
-   }
+    if (xs.length) {
+        var x = average(xs);
+        var y = average(ys);
+        var z = average(zs);
+        return [x, y, z];
+    } else {
+        return null;
+    }
 }
 
 // Map gene symbol to the corresponding chain ID in the PDB file
@@ -129,7 +126,7 @@ function highlight_variant_in_structure(protein_pos, insight_class) {
         var colour = new NGL.Color(insight_class_colour(insight_class));
         var radius = 5;
         var pdb_chain = gene_to_pdb_chain[gene_symbol];
-        var shape_component = highlight_residue(radius, colour, pdb_chain, protein_pos); 
+        var shape_component = highlight_residue(radius, colour, pdb_chain, protein_pos);
         if (shape_component) {
             highlighted_variants[protein_pos] = shape_component;
         }
@@ -137,7 +134,7 @@ function highlight_variant_in_structure(protein_pos, insight_class) {
 }
 
 function un_highlight_variant_in_structure(protein_pos) {
-    // Only try to un-highlight variants that are already highlighted 
+    // Only try to un-highlight variants that are already highlighted
     var highlighted_variants = global['highlighted_variants'];
     if (protein_pos in highlighted_variants) {
         var this_shape_component = highlighted_variants[protein_pos];
@@ -146,12 +143,12 @@ function un_highlight_variant_in_structure(protein_pos) {
     }
 }
 
-function toggle_component(component_name,show){
-   var component = global['pdb_component']
-   var chain_id = gene_to_pdb_chain[component_name];
+function toggle_component(component_name, show) {
+    var component = global['pdb_component']
+    var chain_id = gene_to_pdb_chain[component_name];
 
     if (show) {
-        if (component_name == "DNA"){
+        if (component_name == "DNA") {
             component.addRepresentation("base", {
                 name: 'DNA',
                 sele: ":E or :F",
@@ -162,8 +159,7 @@ function toggle_component(component_name,show){
                 sele: ":E or :F",
                 quality: "high"
             });
-        }
-        else{
+        } else {
             component.addRepresentation("cartoon", {
                 name: component_name,
                 sele: chain_id,
@@ -175,29 +171,31 @@ function toggle_component(component_name,show){
                 quality: "high"
             });
         }
-    }
-    else {
+    } else {
         component.stage.getRepresentationsByName(component_name).dispose();
     }
 }
 
 function highlight_residue(radius, colour, chain_id, residue_pos) {
-   var stage = global['stage'];
-   var structure = global['pdb_component'].structure;
-   var coords = get_residue_coords(structure, chain_id, residue_pos);
-   if (coords) {
-       var shape = new NGL.Shape( "shape", { disableImpostor: true } );            
-       shape.addSphere(coords, colour, radius);
-       var component = stage.addComponentFromObject(shape);
-       component.addRepresentation("buffer", { opacity: 0.5 });
-       return component;
-    }
-    else {
+    var stage = global['stage'];
+    var structure = global['pdb_component'].structure;
+    var coords = get_residue_coords(structure, chain_id, residue_pos);
+    if (coords) {
+        var shape = new NGL.Shape("shape", {
+            disableImpostor: true
+        });
+        shape.addSphere(coords, colour, radius);
+        var component = stage.addComponentFromObject(shape);
+        component.addRepresentation("buffer", {
+            opacity: 0.5
+        });
+        return component;
+    } else {
         return null;
     }
 }
 
-function set_default_representation(component){
+function set_default_representation(component) {
     component.addRepresentation("cartoon", {
         name: 'MSH2',
         sele: ":A",
@@ -239,23 +237,22 @@ function initialise_pdb_component(component) {
 function show_variants_table() {
     var variants_table = $('#variants_table').DataTable({
         "dom": 'Blfrtip',
-        buttons: [
-            {
-               extend: "colvis",
-               className: "btn-sm btn-outline-primary",
-               titleAttr: 'Column visibility',
-               text: 'Columns'
+        buttons: [{
+                extend: "colvis",
+                className: "btn-sm btn-outline-primary",
+                titleAttr: 'Column visibility',
+                text: 'Columns'
             },
             {
-               extend: "copy",
-               className: "btn-sm btn-outline-primary",
-               titleAttr: 'Copy data',
-               text: 'Copy'
+                extend: "copy",
+                className: "btn-sm btn-outline-primary",
+                titleAttr: 'Copy data',
+                text: 'Copy'
             }
         ],
         "data": global['variant_information'],
         "order": [
-            [2, "asc"]  // sort by genome position by default
+            [2, "asc"] // sort by genome position by default
         ],
         "scrollX": true,
         "pageLength": 10,
@@ -263,8 +260,7 @@ function show_variants_table() {
         "select": {
             style: 'multi'
         },
-        "columns": [
-            {
+        "columns": [{
                 data: "gene",
                 visible: false
             },
@@ -496,17 +492,17 @@ function show_variants_table() {
     // The below code is needed to get the DataTable to re-draw itself to get the
     // column widths correct. See https://github.com/DataTables/Responsive/issues/40
     // and http://stackoverflow.com/questions/8278981/datatables-on-the-fly-resizing/39157482#39157482
-    $($.fn.dataTable.tables( true ) ).css('width', '100%');
-    $($.fn.dataTable.tables( true ) ).DataTable().columns.adjust().draw();
+    $($.fn.dataTable.tables(true)).css('width', '100%');
+    $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
 
-    variants_table.on('select', function (e, dt, type, indexes) {
-        var row = table.rows(indexes).data()[0];
-        highlight_variant_in_structure(row['protein_position'], row['insight_class']);
-    })
-    .on('deselect', function ( e, dt, type, indexes ) {
-        var row = table.rows(indexes).data()[0];
-        un_highlight_variant_in_structure(row['protein_position']);
-    });
+    variants_table.on('select', function(e, dt, type, indexes) {
+            var row = table.rows(indexes).data()[0];
+            highlight_variant_in_structure(row['protein_position'], row['insight_class']);
+        })
+        .on('deselect', function(e, dt, type, indexes) {
+            var row = table.rows(indexes).data()[0];
+            un_highlight_variant_in_structure(row['protein_position']);
+        });
 
     return variants_table;
 }
@@ -566,36 +562,36 @@ function is_class_selected(variant_class) {
         var this_selected_class = selected_classes[i];
         switch (this_selected_class) {
             case "N/A":
-               if (variant_class === "N/A") {
-                   return true;
-               }
-               break;
+                if (variant_class === "N/A") {
+                    return true;
+                }
+                break;
             case "1":
-               if (variant_class === "1") {
-                   return true; 
-               }
-               break;
+                if (variant_class === "1") {
+                    return true;
+                }
+                break;
             case "2":
-               if (variant_class === "2") {
-                   return true; 
-               }
-               break;
+                if (variant_class === "2") {
+                    return true;
+                }
+                break;
             case "3":
-               if (variant_class === "3") {
-                   return true; 
-               }
-               break;
+                if (variant_class === "3") {
+                    return true;
+                }
+                break;
             case "4":
-               if (variant_class === "4") {
-                   return true; 
-               }
-               break;
+                if (variant_class === "4") {
+                    return true;
+                }
+                break;
             case "5":
-               if (variant_class === "5") {
-                   return true; 
-               }
-               break;
-        } 
+                if (variant_class === "5") {
+                    return true;
+                }
+                break;
+        }
     }
     return false;
 }
@@ -610,31 +606,31 @@ function is_impact_selected(impact) {
         var selected_impact = is[i];
         switch (selected_impact) {
             case "N/A":
-               if (impact === "N/A") {
-                   return true;
-               }
-               break;
+                if (impact === "N/A") {
+                    return true;
+                }
+                break;
             case "Low":
-               if (impact === "LOW") {
-                   return true; 
-               }
-               break;
+                if (impact === "LOW") {
+                    return true;
+                }
+                break;
             case "Moderate":
-               if (impact === "MODERATE") {
-                   return true; 
-               }
-              break;
+                if (impact === "MODERATE") {
+                    return true;
+                }
+                break;
             case "Modifier":
-               if (impact === "MODIFIER") {
-                  return true;
-               }
-               break;
+                if (impact === "MODIFIER") {
+                    return true;
+                }
+                break;
             case "High":
-               if (impact === "HIGH") {
-                  return true;
-               }
-               break;
-        } 
+                if (impact === "HIGH") {
+                    return true;
+                }
+                break;
+        }
     }
     return false;
 }
@@ -649,43 +645,41 @@ function is_consequence_selected(consequence) {
         var selected_consequence = cs[i];
         switch (selected_consequence) {
             case "Missense":
-               if (consequence.includes("missense")) {
-                   return true;
-               }
-               break;
+                if (consequence.includes("missense")) {
+                    return true;
+                }
+                break;
             case "Stop gained":
-               if (consequence.includes("stop_gained")) {
-                   return true; 
-               }
-               break;
+                if (consequence.includes("stop_gained")) {
+                    return true;
+                }
+                break;
             case "Splice":
-               if (consequence.includes("splice")) {
-                   return true; 
-               }
-              break;
+                if (consequence.includes("splice")) {
+                    return true;
+                }
+                break;
             case "Frameshift":
-               if (consequence.includes("frameshift")) {
-                  return true;
-               }
-               break;
+                if (consequence.includes("frameshift")) {
+                    return true;
+                }
+                break;
             case "Start lost":
-               if (consequence.includes("start_lost")) {
-                  return true;
-               }
-               break;
+                if (consequence.includes("start_lost")) {
+                    return true;
+                }
+                break;
             case "Synonymous":
-               if (consequence.includes("synonymous")) {
-                  return true;
-               }
-               break;
-        } 
+                if (consequence.includes("synonymous")) {
+                    return true;
+                }
+                break;
+        }
     }
     return false;
 }
 
 function gene_lollipop(gene_symbol) {
-
-    console.log("gene lollipop woohoo"); 
 
     // XXX these width and height values probably shouldn't be hard-coded here
     var display_width = 1100;
@@ -703,14 +697,14 @@ function gene_lollipop(gene_symbol) {
     var variants = [];
     for (var i = 0; i < global['variant_information'].length; i++) {
         var v = global['variant_information'][i];
-        if (v.gene == gene_symbol && (is_class_selected(v.insight_class)
-                                      || is_impact_selected(v.impact)
-                                      || is_consequence_selected(v.consequence))) {
+        if (v.gene == gene_symbol && (is_class_selected(v.insight_class) ||
+                is_impact_selected(v.impact) ||
+                is_consequence_selected(v.consequence))) {
             var this_colour = insight_class_colour(v.insight_class);
             var position_integer = parseInt(v.protein_position, 10);
-	    if (position_integer) {
+            if (position_integer) {
                 variants.push({
-                    'pos': position_integer, 
+                    'pos': position_integer,
                     'label': v.HGVSp,
                     'colour': this_colour
                 });
@@ -974,10 +968,12 @@ function filter_variants_to_gene_and_protein(gene, variants) {
 }
 
 function clear_selected_variants() {
-    var table = global['variants_table']; 
+    var table = global['variants_table'];
     var highlighted_variants = global['highlighted_variants'];
     var stage = global['stage'];
-    table.rows({selected: true}).deselect();
+    table.rows({
+        selected: true
+    }).deselect();
     for (var protein_pos in highlighted_variants) {
         var this_shape_component = highlighted_variants[protein_pos];
         stage.removeComponent(this_shape_component);
@@ -985,9 +981,240 @@ function clear_selected_variants() {
     global['highlighted_variants'] = {};
 }
 
-function plot_population_frequencies(gene_symbol) {
+var plot_axis_types = {
+    'gene': 'categorical',
+    'insight_class': 'categorical',
+    'consequence': 'categorical',
+    'impact': 'categorical',
+    'exon': 'categorical',
+    'intron': 'categorical',
+    'cdna_position': 'numerical',
+    'cds_position': 'numerical',
+    'protein_position': 'numerical',
+    'ada_score': 'numerical',
+    'rf_score': 'numerical',
+    'cadd_phred': 'numerical',
+    'revel_score': 'numerical',
+    'maxentscan_alt': 'numerical',
+    'maxentscan_diff': 'numerical',
+    'maxentscan_ref': 'numerical',
+    'gnomad_af': 'numerical',
+    'num_homozygotes': 'numerical',
+    'mtr': 'numerical',
+    'mtr_genemean': 'numerical',
+    'mtr_genemedian': 'numerical',
+    'diff_mtr_gene_mean': 'numerical',
+    'diff_mtr_gene_median': 'numerical',
+    'diff_mtr_genome_mean': 'numerical',
+    'diff_mtr_genome_median': 'numerical',
+    'ratio_mtr_gene_mean': 'numerical',
+    'ratio_mtr_gene_median': 'numerical',
+    'ratio_mtr_genome_mean': 'numerical',
+    'ratio_mtr_genome_median': 'numerical',
+    'ToPRO': 'categorical',
+    'ToGLY': 'categorical',
+    'FromPRO': 'categorical',
+    'FromGLY': 'categorical',
+    'Phi': 'numerical',
+    'Psi': 'numerical',
+    'Omega': 'numerical',
+    'PositivePhiGLY': 'categorical',
+    'provean': 'numerical',
+    'provean_pred': 'categorical',
+    'sift': 'numerical',
+    'sift_pred': 'categorical',
+    'dist_lig': 'numerical',
+    'dist_na': 'numerical',
+    'dist_ppi': 'numerical',
+    'pph2': 'numerical',
+    'pph2_prediction': 'categorical',
+    'mcsm_na': 'numerical',
+    'mcsm_ppi': 'numerical',
+    'ddg_encom': 'numerical',
+    'dds_encom': 'numerical',
+    'ddg_duet': 'numerical',
+    'ddg_dynamut': 'numerical',
+    'ddg_mcsm': 'numerical',
+    'ddg_sdm': 'numerical',
+    'predicted': 'categorical',
+};
 
-    frequecies_per_class = {};
+function set_plot_select_options() {
+    Object.keys(plot_axis_types).forEach(key => {
+        var x_options = $('#plot_x_axis')
+            .append($("<option></option>")
+                .attr("value", key)
+                .text(key));
+        var y_options = $('#plot_y_axis')
+            .append($("<option></option>")
+                .attr("value", key)
+                .text(key));
+    });
+    $('#plot_x_axis').find('option[value="insight_class"]').attr("selected", "selected");
+    $('#plot_y_axis').find('option[value="gnomad_af"]').attr("selected", "selected");
+}
+
+function plot_variant_attributes(gene_symbol) {
+
+    //Plotly.purge('variant_attributes_plot');
+    var selected_plot_x_axis = document.getElementById("plot_x_axis");
+    var selected_plot_x_axis_value = selected_plot_x_axis.options[selected_plot_x_axis.selectedIndex].value;
+    var selected_plot_y_axis = document.getElementById("plot_y_axis");
+    var selected_plot_y_axis_value = selected_plot_y_axis.options[selected_plot_y_axis.selectedIndex].value;
+    var x_axis_type = plot_axis_types[selected_plot_x_axis_value];
+    var y_axis_type = plot_axis_types[selected_plot_y_axis_value];
+
+    if (x_axis_type === 'categorical' && y_axis_type === 'numerical') {
+        box_plot_variant_attributes(gene_symbol, selected_plot_x_axis_value, selected_plot_y_axis_value);
+    } else if (x_axis_type === 'categorical' && y_axis_type === 'categorical') {
+        stacked_bar_plot_variant_attributes(gene_symbol, selected_plot_x_axis_value, selected_plot_y_axis_value);
+    } else if (x_axis_type === 'numerical' && y_axis_type === 'numerical') {
+        scatter_plot_variant_attributes(gene_symbol, selected_plot_x_axis_value, selected_plot_y_axis_value);
+    } else if (x_axis_type === 'numerical' && y_axis_type === 'categorical') {
+        stacked_histogram_plot_variant_attributes(gene_symbol, selected_plot_x_axis_value, selected_plot_y_axis_value);
+    }
+}
+
+function stacked_bar_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {}
+
+function scatter_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {
+
+    $('#log_x_axis').prop('disabled', false);
+    $('#log_y_axis').prop('disabled', false);
+
+    var x_values = [];
+    var y_values = [];
+
+    var variants = [];
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
+        if (v.gene == gene_symbol) {
+            var this_x_value = v[x_axis_attribute];
+            var this_y_value = v[y_axis_attribute];
+            if (this_x_value && this_y_value) {
+                this_x_value_numerical = parseFloat(this_x_value);
+                this_y_value_numerical = parseFloat(this_y_value);
+                x_values.push(this_x_value_numerical);
+                y_values.push(this_y_value_numerical);
+            }
+        }
+    }
+
+    var this_trace = {
+        x: x_values,
+        y: y_values,
+        type: 'scatter',
+        mode: 'markers',
+    };
+
+    var plot_traces = [this_trace];
+
+    var x_axis_type = 'linear';
+    var x_axis_label = x_axis_attribute;
+    if ($('#log_x_axis').is(":checked")) {
+        x_axis_type = 'log';
+        x_axis_label = x_axis_attribute + ' (log)';
+    }
+
+    var y_axis_type = 'linear';
+    var y_axis_label = y_axis_attribute;
+    if ($('#log_y_axis').is(":checked")) {
+        y_axis_type = 'log';
+        y_axis_label = y_axis_attribute + ' (log)';
+    }
+
+    var layout = {
+        title: {
+            text: x_axis_attribute + ' versus ' + y_axis_attribute,
+        },
+        yaxis: {
+            type: y_axis_type,
+            autorange: true,
+            title: y_axis_label,
+        },
+        xaxis: {
+            type: x_axis_type,
+            autorange: true,
+            title: x_axis_label,
+        },
+        height: 600
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+}
+
+function stacked_histogram_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {}
+
+function box_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {
+    var values_per_group = {};
+
+    $('#log_x_axis').prop('disabled', true);
+    $('#log_y_axis').prop('disabled', false);
+
+    var variants = [];
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
+        if (v.gene == gene_symbol) {
+            var this_value = v[y_axis_attribute];
+            if (this_value) {
+                this_value_numerical = parseFloat(this_value);
+                var this_group = v[x_axis_attribute];
+                if (!(this_group in values_per_group)) {
+                    values_per_group[this_group] = [];
+                }
+                values_per_group[this_group].push(this_value_numerical);
+            }
+        }
+    }
+
+    var plot_traces = [];
+
+    Object.keys(values_per_group).forEach(group_name => {
+        if (group_name in values_per_group) {
+            var this_group_values = values_per_group[group_name];
+        } else {
+            var this_group_values = [];
+        }
+        var this_trace = {
+            y: this_group_values,
+            type: 'box',
+            name: group_name,
+            boxpoints: 'all',
+            jitter: 0.3,
+            pointpos: -1.8,
+        };
+        plot_traces.push(this_trace);
+    });
+
+    var y_axis_type = 'linear';
+    var y_axis_label = y_axis_attribute;
+    if ($('#log_y_axis').is(":checked")) {
+        y_axis_type = 'log';
+        y_axis_label = y_axis_attribute + ' (log)';
+    }
+
+    var layout = {
+        title: {
+            text: x_axis_attribute + ' versus ' + y_axis_attribute,
+        },
+        yaxis: {
+            type: y_axis_type,
+            autorange: true,
+            title: y_axis_label,
+        },
+        xaxis: {
+            title: x_axis_attribute,
+            type: 'category',
+        },
+        height: 600
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+}
+
+/*
+function box_plot_variant_attributes_old(gene_symbol, x_axis_attribute, y_axis_attribute) {
+    var frequencies_per_class = {};
 
     var variants = [];
     for (var i = 0; i < global['variant_information'].length; i++) {
@@ -996,23 +1223,22 @@ function plot_population_frequencies(gene_symbol) {
             var this_af = v.gnomad_af;
             if (this_af) {
                 this_af = parseFloat(this_af);
-                var this_class = v.insight_class; 
-                if (!(this_class in frequecies_per_class)) {
-                    frequecies_per_class[this_class] = [];
+                var this_class = v.insight_class;
+                if (!(this_class in frequencies_per_class)) {
+                    frequencies_per_class[this_class] = [];
                 }
-                frequecies_per_class[this_class].push(this_af);
+                frequencies_per_class[this_class].push(this_af);
             }
         }
     }
 
     var insight_classes = ['N/A', '1', '2', '3', '4', '5'];
-    var plot_traces = []; 
+    var plot_traces = [];
 
-    insight_classes.forEach(function (class_name) {
-        if (class_name in frequecies_per_class) {
-            var this_class_frequencies = frequecies_per_class[class_name];
-        }
-        else {
+    insight_classes.forEach(function(class_name) {
+        if (class_name in frequencies_per_class) {
+            var this_class_frequencies = frequencies_per_class[class_name];
+        } else {
             var this_class_frequencies = [];
         }
         var this_trace = {
@@ -1027,7 +1253,9 @@ function plot_population_frequencies(gene_symbol) {
     });
 
     var layout = {
-        title: { text:'gnomAD population frequency versus InSiGHT class' },
+        title: {
+            text: 'gnomAD population frequency versus InSiGHT class'
+        },
         yaxis: {
             type: 'log',
             autorange: true,
@@ -1036,11 +1264,12 @@ function plot_population_frequencies(gene_symbol) {
         xaxis: {
             title: 'InSiGHT class',
         },
-	height: 600
+        height: 600
     };
-    
-    Plotly.newPlot('population_frequencies', plot_traces, layout);
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
 }
+*/
 
 function main(gene_symbol) {
 
@@ -1048,17 +1277,16 @@ function main(gene_symbol) {
 
     /* event handlers */
     $('#lollipop_class').on("change", function(e) {
-        console.log("lollipop class");
         gene_lollipop(gene_symbol);
     });
 
+    /* event handlers */
     $('#lollipop_consequence').on("change", function(e) {
-        console.log("lollipop consequence");
         gene_lollipop(gene_symbol);
     });
 
+    /* event handlers */
     $('#lollipop_impact').on("change", function(e) {
-        console.log("lollipop impact");
         gene_lollipop(gene_symbol);
     });
 
@@ -1073,19 +1301,45 @@ function main(gene_symbol) {
 
         set_default_representation(component);
 
-        $("#show_msh6"). prop("checked", true);
-        $("#show_msh2"). prop("checked", true);
-        $("#show_dna"). prop("checked", true);
-        $("#show_labels"). prop("checked", false);
+        $("#show_msh6").prop("checked", true);
+        $("#show_msh2").prop("checked", true);
+        $("#show_dna").prop("checked", true);
+        $("#show_labels").prop("checked", false);
 
     });
 
+    /* event handlers */
+    $("#plot_x_axis").change(function() {
+        plot_variant_attributes(gene_symbol);
+    });
+
+    /* event handlers */
+    $("#plot_y_axis").change(function() {
+        plot_variant_attributes(gene_symbol);
+    });
+
+    /* event handlers */
+    $("#log_x_axis").change(function() {
+        plot_variant_attributes(gene_symbol);
+    });
+
+    /* event handlers */
+    $("#log_y_axis").change(function() {
+        plot_variant_attributes(gene_symbol);
+    });
+
+    /* set up the axis options for plotting the variant attributes */
+    set_plot_select_options();
+
+    /* Display basic information about this particular gene */
     gene_metadata(gene_symbol);
 
     $.ajax({
         type: "GET",
         url: "/variants_data",
-        data: {'gene':gene_symbol},
+        data: {
+            'gene': gene_symbol
+        },
         cache: false,
         success: function(response) {
             // keep only variants relevant to the gene of interest
@@ -1095,7 +1349,7 @@ function main(gene_symbol) {
             table = show_variants_table();
             global['variants_table'] = table;
             visualise_protein_structure();
-            plot_population_frequencies(gene_symbol);
+            plot_variant_attributes(gene_symbol);
         }
     });
 }
