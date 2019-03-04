@@ -1051,7 +1051,7 @@ function set_plot_select_options() {
                 .text(key));
     });
     $('#plot_x_axis').find('option[value="insight_class"]').attr("selected", "selected");
-    $('#plot_y_axis').find('option[value="gnomad_af"]').attr("selected", "selected");
+    $('#plot_y_axis').find('option[value="predicted"]').attr("selected", "selected");
 }
 
 function plot_variant_attributes(gene_symbol) {
@@ -1087,9 +1087,9 @@ function stacked_bar_plot_variant_attributes(gene_symbol, x_axis_attribute, y_ax
         var v = global['variant_information'][i];
         if (v.gene == gene_symbol) {
             var x_value = v[x_axis_attribute];
-            x_axis_labels_set.add(x_value);
             var y_value = v[y_axis_attribute];
             if (x_value && y_value) {
+                x_axis_labels_set.add(x_value);
                 if (!(y_value in y_axis_groups)) {
                     y_axis_groups[y_value] = {};
                 }
@@ -1285,9 +1285,9 @@ function box_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attri
         var v = global['variant_information'][i];
         if (v.gene == gene_symbol) {
             var this_value = v[y_axis_attribute];
-            if (this_value) {
+            var this_group = v[x_axis_attribute];
+            if (this_value && this_group) {
                 this_value_numerical = parseFloat(this_value);
-                var this_group = v[x_axis_attribute];
                 if (!(this_group in values_per_group)) {
                     values_per_group[this_group] = [];
                 }
@@ -1299,11 +1299,7 @@ function box_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attri
     var plot_traces = [];
 
     Object.keys(values_per_group).forEach(group_name => {
-        if (group_name in values_per_group) {
-            var this_group_values = values_per_group[group_name];
-        } else {
-            var this_group_values = [];
-        }
+        var this_group_values = values_per_group[group_name];
         var this_trace = {
             y: this_group_values,
             type: 'box',
@@ -1340,65 +1336,6 @@ function box_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attri
 
     Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
 }
-
-/*
-function box_plot_variant_attributes_old(gene_symbol, x_axis_attribute, y_axis_attribute) {
-    var frequencies_per_class = {};
-
-    var variants = [];
-    for (var i = 0; i < global['variant_information'].length; i++) {
-        var v = global['variant_information'][i];
-        if (v.gene == gene_symbol) {
-            var this_af = v.gnomad_af;
-            if (this_af) {
-                this_af = parseFloat(this_af);
-                var this_class = v.insight_class;
-                if (!(this_class in frequencies_per_class)) {
-                    frequencies_per_class[this_class] = [];
-                }
-                frequencies_per_class[this_class].push(this_af);
-            }
-        }
-    }
-
-    var insight_classes = ['N/A', '1', '2', '3', '4', '5'];
-    var plot_traces = [];
-
-    insight_classes.forEach(function(class_name) {
-        if (class_name in frequencies_per_class) {
-            var this_class_frequencies = frequencies_per_class[class_name];
-        } else {
-            var this_class_frequencies = [];
-        }
-        var this_trace = {
-            y: this_class_frequencies,
-            type: 'box',
-            name: 'Class ' + class_name,
-            boxpoints: 'all',
-            jitter: 0.3,
-            pointpos: -1.8,
-        };
-        plot_traces.push(this_trace);
-    });
-
-    var layout = {
-        title: {
-            text: 'gnomAD population frequency versus InSiGHT class'
-        },
-        yaxis: {
-            type: 'log',
-            autorange: true,
-            title: 'gnomAD population frequency (log scale)',
-        },
-        xaxis: {
-            title: 'InSiGHT class',
-        },
-        height: 600
-    };
-
-    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
-}
-*/
 
 function main(gene_symbol) {
 
