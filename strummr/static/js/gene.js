@@ -1075,7 +1075,81 @@ function plot_variant_attributes(gene_symbol) {
     }
 }
 
-function stacked_bar_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {}
+function stacked_bar_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {
+
+    var y_axis_groups = {};
+    var x_axis_labels_set = new Set();
+
+    $('#log_x_axis').prop('disabled', true);
+    $('#log_y_axis').prop('disabled', false);
+
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
+        if (v.gene == gene_symbol) {
+            var x_value = v[x_axis_attribute];
+            x_axis_labels_set.add(x_value);
+            var y_value = v[y_axis_attribute];
+            if (x_value && y_value) {
+                if (!(y_value in y_axis_groups)) {
+                    y_axis_groups[y_value] = {};
+                }
+                if (!(x_value in y_axis_groups[y_value])) {
+                    y_axis_groups[y_value][x_value] = 0;
+                }
+                y_axis_groups[y_value][x_value]++;
+            }
+        }
+    }
+
+    var plot_traces = [];
+    var x_axis_labels = Array.from(x_axis_labels_set).sort();
+
+    Object.keys(y_axis_groups).forEach(y_axis_group => {
+        var x_counts = [];
+        for (var i = 0; i < x_axis_labels.length; i++) {
+            var this_x_label = x_axis_labels[i];
+            if ((this_x_label in y_axis_groups[y_axis_group])) {
+                x_counts.push(y_axis_groups[y_axis_group][this_x_label]);
+            }
+            else {
+                x_counts.push(0);
+            }
+        }
+        var this_trace = {
+            y: x_counts,
+            x: x_axis_labels,
+            type: 'bar',
+            name: y_axis_group,
+        };
+        plot_traces.push(this_trace);
+    });
+
+    var y_axis_type = 'linear';
+    var y_axis_label = y_axis_attribute;
+    if ($('#log_y_axis').is(":checked")) {
+        y_axis_type = 'log';
+        y_axis_label = y_axis_attribute + ' (log)';
+    }
+
+    var layout = {
+        title: {
+            text: x_axis_attribute + ' versus ' + y_axis_attribute,
+        },
+        yaxis: {
+            type: y_axis_type,
+            autorange: true,
+            title: y_axis_label,
+        },
+        xaxis: {
+            title: x_axis_attribute,
+            type: 'category',
+        },
+        height: 600,
+        barmode: 'stack',
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+}
 
 function scatter_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {
 
@@ -1085,7 +1159,6 @@ function scatter_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_a
     var x_values = [];
     var y_values = [];
 
-    var variants = [];
     for (var i = 0; i < global['variant_information'].length; i++) {
         var v = global['variant_information'][i];
         if (v.gene == gene_symbol) {
@@ -1143,7 +1216,64 @@ function scatter_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_a
     Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
 }
 
-function stacked_histogram_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {}
+function stacked_histogram_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {
+    var values_per_group = {};
+
+    $('#log_x_axis').prop('disabled', true);
+    $('#log_y_axis').prop('disabled', false);
+
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
+        if (v.gene == gene_symbol) {
+            var this_value = v[x_axis_attribute];
+            var this_group = v[y_axis_attribute];
+            if (this_value && this_group) {
+                this_value_numerical = parseFloat(this_value);
+                if (!(this_group in values_per_group)) {
+                    values_per_group[this_group] = [];
+                }
+                values_per_group[this_group].push(this_value_numerical);
+            }
+        }
+    }
+
+    var plot_traces = [];
+
+    Object.keys(values_per_group).forEach(group_name => {
+        var this_group_values = values_per_group[group_name];
+        var this_trace = {
+            x: this_group_values,
+            type: 'histogram',
+            name: group_name,
+        };
+        plot_traces.push(this_trace);
+    });
+
+    var y_axis_type = 'linear';
+    var y_axis_label = y_axis_attribute;
+    if ($('#log_y_axis').is(":checked")) {
+        y_axis_type = 'log';
+        y_axis_label = y_axis_attribute + ' (log)';
+    }
+
+    var layout = {
+        title: {
+            text: x_axis_attribute + ' versus ' + y_axis_attribute,
+        },
+        yaxis: {
+            type: y_axis_type,
+            autorange: true,
+            title: y_axis_label,
+        },
+        xaxis: {
+            title: x_axis_attribute,
+        },
+        height: 600,
+        barmode: 'stack',
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+}
 
 function box_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attribute) {
     var values_per_group = {};
@@ -1151,7 +1281,6 @@ function box_plot_variant_attributes(gene_symbol, x_axis_attribute, y_axis_attri
     $('#log_x_axis').prop('disabled', true);
     $('#log_y_axis').prop('disabled', false);
 
-    var variants = [];
     for (var i = 0; i < global['variant_information'].length; i++) {
         var v = global['variant_information'][i];
         if (v.gene == gene_symbol) {
