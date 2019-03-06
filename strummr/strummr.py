@@ -1,9 +1,9 @@
 '''
 Module      : Main
 Description : The main entry point for the program.
-Copyright   : (c) Bernie Pope, 07 Dec 2018 
-License     : MIT 
-Maintainer  : bjpope@unimelb.edu.au 
+Copyright   : (c) Bernie Pope, 07 Dec 2018
+License     : MIT
+Maintainer  : bjpope@unimelb.edu.au
 Portability : POSIX
 
 The program reads one or more input FASTA files. For each file it computes a
@@ -16,6 +16,8 @@ import logging
 import pkg_resources
 import csv
 import flask
+import os
+import pickle
 
 app = flask.Flask(__name__, template_folder='templates')
 
@@ -59,12 +61,12 @@ def parse_args():
                         version='%(prog)s ' + PROGRAM_VERSION)
     parser.add_argument('--pdb',
                         metavar='FILE',
-                        type=str, 
+                        type=str,
                         required=True,
                         help='pdb file for protein')
     parser.add_argument('--variants',
                         metavar='FILE',
-                        type=str, 
+                        type=str,
                         required=True,
                         help='CSV file containing variant information')
     parser.add_argument('--log',
@@ -140,7 +142,14 @@ def variant_page(coordinate):
         coord = (chrom, pos, ref, alt)
         if coord in Data.index:
             variant_row = Data.index[coord]
-            return flask.render_template('variant.html', variant=variant_row)
+            chain = "A" if variant_row['gene'] == "MSH2" else "B"
+            folder = os.path.join('/'.join(app.root_path.split('/')[:-1]),"data","arpeggio_interactions")
+            pickle_file = os.path.join(folder, "{}_{}".format(chain,variant_row['protein_position']),'interactions.p')
+            interactions = {'interactions':[],'pi_interactions':[],'pi_interactions_residues':[]}
+            if os.path.exists(pickle_file):
+                interactions = pickle.load(open(pickle_file,'rb'))
+            return flask.render_template('variant.html', variant=variant_row, interactions=interactions['interactions'],
+                    pi_interactions=interactions["pi_interactions"], pi_interactions_residues=interactions["pi_interactions_residues"])
         else:
             return flask.render_template('unknown_variant.html', request=coordinate), 404
     else:
@@ -150,7 +159,7 @@ def variant_page(coordinate):
 class Data(object):
     data = []
     index = {}
-    pdb = "" 
+    pdb = ""
     def __init__(self, options):
         with open(options.pdb) as pdb_file:
             # We assume the pdb file is correct, and do not try to parse its contents.
