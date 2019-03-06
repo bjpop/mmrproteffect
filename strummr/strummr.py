@@ -183,6 +183,14 @@ class Data(object):
                         Data.index[coord] = row
                     Data.data.append(row)
 
+@app.route('/download_pymol_session/<gene>/<position>',methods=['GET'])
+def download_pymol_session(gene, position):
+    position = position.split(".")[0]
+    chain = "A" if gene == "MSH2" else "B"
+    folder = os.path.join('/'.join(app.root_path.split('/')[:-1]),"data","arpeggio_interactions")
+    pse_file = os.path.join(folder, "{}_{}".format(chain,position),'wt.clean.{}.{}.pse'.format(chain,position))
+
+    return flask.send_file(pse_file, attachment_filename="{}_{}.pse".format(chain,position))
 
 def main():
     "Orchestrate the execution of the program"
