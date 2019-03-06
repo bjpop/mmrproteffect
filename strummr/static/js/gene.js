@@ -71,7 +71,10 @@ function visualise_protein_structure() {
             stage.loadFile(stringBlob, {
                 ext: "pdb",
                 //defaultRepresentation: false
-            }).then(initialise_pdb_component);
+            }).then(initialise_pdb_component)
+            .then(function(){
+                $("#spinner").hide();
+            });
         }
     });
 }
@@ -197,6 +200,7 @@ function set_default_representation(component) {
     component.addRepresentation("cartoon", {
         name: 'MSH2',
         sele: ":A",
+        color: "chainid",
         quality: "high"
     });
     component.addRepresentation("ball+stick", {
@@ -207,6 +211,7 @@ function set_default_representation(component) {
     component.addRepresentation("cartoon", {
         name: 'MSH6',
         sele: ":B",
+        color: "chainid",
         quality: "high"
     });
     component.addRepresentation("ball+stick", {
@@ -217,11 +222,13 @@ function set_default_representation(component) {
     component.addRepresentation("base", {
         name: 'DNA',
         sele: ":E or :F",
+        color: "element",
         quality: "high"
     });
     component.addRepresentation("cartoon", {
         name: 'DNA',
         sele: ":E or :F",
+        color: "entitytype",
         quality: "high"
     });
     component.autoView();
