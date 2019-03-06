@@ -1,5 +1,47 @@
 {% extends "base.html" %}
 {% block title %}All Variants{% endblock %}
+{% block extra_css %}
+<style>
+    .pi-pi{
+        background-color:#FF2A8E;
+        color:white;
+        font-size:inherit;
+    }
+    .vdw{
+        background-color:#61DBDD;
+        color:white;
+        font-size:inherit;
+    }
+    .hbond{
+        background-color:#FF0000;
+        color:white;
+        font-size:inherit;
+    }
+    .ionic{
+        background-color:#FAFA30;
+        font-size:inherit;
+    }
+    .aromatic{
+        background-color:#90EE90;
+        font-size:inherit;
+    }
+    .hydrophobic{
+        background-color:#137B13;
+        color:white;
+        font-size:inherit;
+    }
+    .carbonyl{
+        background-color:#334CFF;
+        color:white;
+        font-size:inherit;
+    }
+    .polar{
+        background-color:#F58805;
+        color:white;
+        font-size:inherit;
+    }
+</style>
+{% endblock %}
 {% set active_page = "variants" %}
 {% block content %}
 {{ super () }}
@@ -56,24 +98,49 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col">
-                        <h5>Controls</h5>
+                        <h5>Interactions</h5>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-bottom:15px;">
                     <div class="col">
                         <div class="form-check-inline">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="show_msh6" name="MSH6" checked>Show MSH6
+                                <input type="checkbox" class="form-check-input" id="PIints" name="PIints" data-component="buffer" checked><span class="badge pi-pi">PI-PI</span>
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="show_msh2" name="MSH2" checked>Show MSH2
+                                <input type="checkbox" class="form-check-input" id="vdw" name="vdw" data-component="vdw" checked><span class="badge vdw">VDW</span>
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="show_dna" name="DNA" checked>Show DNA
+                                <input type="checkbox" class="form-check-input" id="hbond" name="hbond" data-component="hbond" checked><span class="badge hbond">Hbond</span>
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="ionic" name="ionic" data-component="ionic" checked><span class="badge ionic">Ionic</span>
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="aromatic" name="aromatic" data-component="aromatic" checked><span class="badge aromatic">Aromatic</span>
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="hydrophobic" name="hydrophobic" data-component="hydrophobic" checked><span class="badge hydrophobic">Hydrophobic</span>
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="carbonyl" name="carbonyl" data-component="carbonyl" checked><span class="badge carbonyl">Carbonyl</span>
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="polar" name="polar" data-component="polar" checked><span class="badge polar">Polar</span>
                             </label>
                         </div>
                     </div>
@@ -99,6 +166,9 @@
                             </div>
                             <div class="col">
                                 <button class="btn btn-outline-secondary" type="button" id="screenshot"><i class="fas fa-camera"></i> Screenshot</button>
+                            </div>
+                            <div class="col">
+                                <a class="btn btn-outline-secondary" id="download" href="{{ url_for('download_pymol_session',gene=variant.gene,position=variant.protein_position,_external=True) }}.pse"><i class="fas fa-download"></i> Download</a>
                             </div>
                             <div class="col">
                                 <button class="btn btn-outline-secondary" type="button" id="fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>

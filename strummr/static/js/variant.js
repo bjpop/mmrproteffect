@@ -57,6 +57,13 @@ function visualise_protein_structure() {
         toggle_component($(this).prop("name"), this.checked);
     });
 
+    $("#PIints,#vdw,#hbond,#ionic,#aromatic,#hydrophobic,#carbonyl,#polar").on("click", function (e) {
+        if ($(this).prop("checked") == true)
+            stage.getRepresentationsByName($(this).data('component')).setVisibility(true);
+        else
+            stage.getRepresentationsByName($(this).data('component')).setVisibility(false);
+    });
+
     // Handle window resizing
     window.addEventListener("resize", function(event) {
         stage.handleResize();
@@ -155,25 +162,6 @@ function toggle_component(component_name, show) {
     }
 }
 
-function highlight_residue(radius, colour, chain_id, residue_pos) {
-    var stage = global['stage'];
-    var structure = global['pdb_component'].structure;
-    var coords = get_residue_coords(structure, chain_id, residue_pos);
-    if (coords) {
-        var shape = new NGL.Shape("shape", {
-            disableImpostor: true
-        });
-        shape.addSphere(coords, colour, radius);
-        var component = stage.addComponentFromObject(shape);
-        component.addRepresentation("buffer", {
-            opacity: 0.5
-        });
-        return component;
-    } else {
-        return null;
-    }
-}
-
 function getResidue(arpeggio_interactions, interaction_type) {
     var result = [];
     for (var each in arpeggio_interactions) {
@@ -189,7 +177,7 @@ function getResidue(arpeggio_interactions, interaction_type) {
     return result;
 }
 function getResidues(arpeggio_interactions) {
-    var interaction_list = ['vdw', 'clash', 'hbond', 'ionic', 'aromatic', 'hydrophobic', 'carbonyl', 'polar'];
+    var interaction_list = ['vdw', 'hbond', 'ionic', 'aromatic', 'hydrophobic', 'carbonyl', 'polar'];
     var all_residues = [];
 
     interaction_list.forEach(element => {
@@ -258,14 +246,6 @@ function display_interactions(component){
 
     residueLabel(component, interactions);
 
-    if (getResidue(interactions, 'clash').length > 0) {
-        component.addRepresentation('distance', {
-            name: 'clash',
-            atomPair: getResidue(interactions, 'clash'),
-            color: '#FF00FF',
-            labelVisible: false,
-        })
-    }
     if (getResidue(interactions, 'vdw').length > 0) {
         component.addRepresentation('distance', {
             name: 'vdw',
@@ -364,13 +344,15 @@ function display_PI_interactions(component){
     var pi_interactions = global['pi_interactions'];
     var pi_interactions_residues = global['pi_interactions_residues'];
 
-    component.addRepresentation("ball+stick", {
-        name: 'active_sites_PI',
-        multipleBond: "symmetric",
-        sele: pi_interactions_residues.join(" ")
-    });
+    if (pi_interactions_residues.length > 0){
+        component.addRepresentation("ball+stick", {
+            name: 'active_sites_PI',
+            multipleBond: "symmetric",
+            sele: pi_interactions_residues.join(" ")
+        });
+        PIresidueLabel(component, pi_interactions_residues);
+    }
 
-    PIresidueLabel(component, pi_interactions_residues);
 
     var shape = new NGL.Shape("shape",{dashedCylinder:true, radialSegments:60});
 
