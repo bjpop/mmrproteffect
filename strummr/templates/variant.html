@@ -46,160 +46,245 @@
 {% block content %}
 {{ super () }}
 
-
-<div class="row" style="margin-top:10px;">
-    <div class="col">
-        <h3>Variant Metadata</h3>
-        <table id="variants_metadata" class="table">
-          <tbody>
-            <tr><th scope="col">Gene</th><td>{{ variant.gene }}</td></tr>
-            <tr><th scope="col">Chromosome</th><td>{{ variant.chrom }}</td></tr>
-            <tr><th scope="col">Exon</th><td>{{ variant.exon }}</td></tr>
-            <tr><th scope="col">Position (hg19)</th><td>{{ variant.pos }}</td></tr>
-            <tr><th scope="col">Reference Allele</th><td>{{ variant.ref }}</td></tr>
-            <tr><th scope="col">Alternate Allele</th><td>{{ variant.alt }}</td></tr>
-            <tr><th scope="col">HGVSc</th><td>{{ variant.HGVSc }}</td></tr>
-            <tr><th scope="col">HGVSp</th><td>{{ variant.HGVSp }}</td></tr>
-            <tr><th scope="col">Genomic Change</th><td>{{ variant.genomic_dna_change }}</td></tr>
-            <tr><th scope="col">Coding Sequence Position</th><td>{{ variant.CDS_pos }}</td></tr>
-            <tr><th scope="col">Protein Position</th><td id="position">{{ variant.protein_position }}</td></tr>
-            <tr><th scope="col">Consequence</th><td>{{ variant.consequence }}</td></tr>
-            <tr><th scope="col">Impact</th><td>{{ variant.impact }}</td></tr>
-            <tr><th scope="col">Gnomad Population Frequency</th><td>{{ variant.gnomad_af }}</td></tr>
-            <tr><th scope="col">InSiGHT Class</th><td>{{ variant.insight_class }}</td></tr>
-          </tbody>
-        </table>
+<div class="card my-5">
+    <div class="card-header">
+        <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#interactive_viewer_div" aria-expanded="true" aria-controls="#lollipop_plot_div">
+            Hide/Show
+        </button>
+        <h5>Interactive Viewer</h5>
     </div>
-    <div class="col">
-        <h3>Predictions</h3>
-        <table id="variants_predictions" class="table">
-          <tbody>
-            <tr><th scope="col">Ada Score</th><td>{{ variant.ada_score }}</td></tr>
-            <tr><th scope="col">Rf Score</th><td>{{ variant.rf_score }}</td></tr>
-            <tr><th scope="col">CADD (phred)</th><td>{{ variant.cadd_phred }}</td></tr>
-            <tr><th scope="col">Revel</th><td>{{ variant.revel_score }}</td></tr>
-            <tr><th scope="col">Maxentscan Ref</th><td>{{ variant.maxentscan_ref }}</td></tr>
-            <tr><th scope="col">Maxentscan Alt</th><td>{{ variant.maxentscan_alt }}</td></tr>
-            <tr><th scope="col">Maxentscan Diff</th><td>{{ variant.maxentscan_diff }}</td></tr>
-          </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <hr />
-    </div>
-</div>
-<div id="3DViewer" class="row" style="margin-bottom:15px;display:none;">
-    <div class="col">
-        <h3>Interactive Viewer</h3>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <h5>Interactions</h5>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom:15px;">
-                    <div class="col">
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="PIints" name="PIints" data-component="buffer" checked><span class="badge pi-pi">PI-PI</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="vdw" name="vdw" data-component="vdw" checked><span class="badge vdw">VDW</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="hbond" name="hbond" data-component="hbond" checked><span class="badge hbond">Hbond</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="ionic" name="ionic" data-component="ionic" checked><span class="badge ionic">Ionic</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="aromatic" name="aromatic" data-component="aromatic" checked><span class="badge aromatic">Aromatic</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="hydrophobic" name="hydrophobic" data-component="hydrophobic" checked><span class="badge hydrophobic">Hydrophobic</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="carbonyl" name="carbonyl" data-component="carbonyl" checked><span class="badge carbonyl">Carbonyl</span>
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="polar" name="polar" data-component="polar" checked><span class="badge polar">Polar</span>
-                            </label>
+    <div class="card-body">
+        <div id="interactive_viewer_div" class="collapse show">
+        <div id="3DViewer" class="row" style="margin-bottom:15px;display:none;">
+            <div class="col">
+                <!-- <div class="card"> -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Interactions</h5>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <div id="spinner" class="fa fa-cog fa-spin fa-5x"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="border" id="protein_structure_viewport" style="height:650px;width:auto;text-align:center;overflow:hidden;"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="row" style="margin-top:10px;">
-                            <div class="col">
-                                <button class="btn btn-outline-secondary" type="button" id="reset_visualisation_button"><i class="fas fa-redo"></i> Reset</button>
+                    <div class="row" style="margin-bottom:15px;">
+                        <div class="col">
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="PIints" name="PIints" data-component="buffer" checked><span class="badge pi-pi">PI-PI</span>
+                                </label>
                             </div>
-                            <div class="col">
-                                <button class="btn btn-outline-secondary" type="button" id="spin_protein"><i class="fas fa-sync-alt"></i> Spin</button>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="vdw" name="vdw" data-component="vdw" checked><span class="badge vdw">VDW</span>
+                                </label>
                             </div>
-                            <div class="col">
-                                <button class="btn btn-outline-secondary" type="button" id="screenshot"><i class="fas fa-camera"></i> Screenshot</button>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="hbond" name="hbond" data-component="hbond" checked><span class="badge hbond">Hbond</span>
+                                </label>
                             </div>
-                            <div class="col">
-                                <a class="btn btn-outline-secondary" id="download" href="{{ url_for('download_pymol_session',gene=variant.gene,position=variant.protein_position,_external=True) }}.pse"><i class="fas fa-download"></i> Download</a>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="ionic" name="ionic" data-component="ionic" checked><span class="badge ionic">Ionic</span>
+                                </label>
                             </div>
-                            <div class="col">
-                                <button class="btn btn-outline-secondary" type="button" id="fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="aromatic" name="aromatic" data-component="aromatic" checked><span class="badge aromatic">Aromatic</span>
+                                </label>
                             </div>
-                            <div class="col">
-                                <button class="btn btn-outline-secondary" type="button" id="help" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp"><i class="fas fa-question-circle"></i>
-                                    Help</button>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="hydrophobic" name="hydrophobic" data-component="hydrophobic" checked><span class="badge hydrophobic">Hydrophobic</span>
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="carbonyl" name="carbonyl" data-component="carbonyl" checked><span class="badge carbonyl">Carbonyl</span>
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" id="polar" name="polar" data-component="polar" checked><span class="badge polar">Polar</span>
+                                </label>
                             </div>
                         </div>
-                        <div id="collapseHelp" class="row collapse">
-                            <div class="col">
-                                <div class="alert alert-info" role="alert">
-                                    <p><span class="badge badge-secondary">left-click + drag</span> Rotate</p>
-                                    <p><span class="badge badge-secondary">right-click + drag</span> Translate</p>
-                                    <p><span class="badge badge-secondary">mouse wheel</span> Zoom</p>
-                                    <p><span class="badge badge-secondary">click on structure</span> Center on clicked region</p>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <div id="spinner" class="fa fa-cog fa-spin fa-5x"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="border" id="protein_structure_viewport" style="height:650px;width:auto;text-align:center;overflow:hidden;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row" style="margin-top:10px;">
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="reset_visualisation_button"><i class="fas fa-redo"></i> Reset</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="spin_protein"><i class="fas fa-sync-alt"></i> Spin</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="screenshot"><i class="fas fa-camera"></i> Screenshot</button>
+                                </div>
+                                <div class="col">
+                                    <a class="btn btn-outline-secondary" id="download" href="{{ url_for('download_pymol_session',gene=variant.gene,position=variant.protein_position,_external=True) }}.pse"><i class="fas fa-download"></i> Download</a>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="fullscreen"><i class="fas fa-expand"></i> Fullscreen</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-outline-secondary" type="button" id="help" data-toggle="collapse" data-target="#collapseHelp" aria-expanded="false" aria-controls="collapseHelp"><i class="fas fa-question-circle"></i>
+                                        Help</button>
+                                </div>
+                            </div>
+                            <div id="collapseHelp" class="row collapse">
+                                <div class="col">
+                                    <div class="alert alert-info" role="alert">
+                                        <p><span class="badge badge-secondary">left-click + drag</span> Rotate</p>
+                                        <p><span class="badge badge-secondary">right-click + drag</span> Translate</p>
+                                        <p><span class="badge badge-secondary">mouse wheel</span> Zoom</p>
+                                        <p><span class="badge badge-secondary">click on structure</span> Center on clicked region</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <!-- </div> -->
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="card my-5">
+    <div class="card-header">
+        <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#variant_metadata_div" aria-expanded="true" aria-controls="#lollipop_plot_div">
+            Hide/Show
+        </button>
+        <h5>Variant metadata</h5>
+    </div>
+    <div class="card-body">
+        <div id="variant_metadata_div" class="collapse show">
+            <div class="row" style="margin-top:10px;">
+                <div class="col">
+                    <h3>Variant Metadata</h3>
+                    <table id="variants_metadata" class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="col">Gene</th>
+                                <td>{{ variant.gene }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Chromosome</th>
+                                <td>{{ variant.chrom }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Exon</th>
+                                <td>{{ variant.exon }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Position (hg19)</th>
+                                <td>{{ variant.pos }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Reference Allele</th>
+                                <td>{{ variant.ref }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Alternate Allele</th>
+                                <td>{{ variant.alt }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">HGVSc</th>
+                                <td>{{ variant.HGVSc }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">HGVSp</th>
+                                <td>{{ variant.HGVSp }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Genomic Change</th>
+                                <td>{{ variant.genomic_dna_change }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Coding Sequence Position</th>
+                                <td>{{ variant.CDS_pos }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Protein Position</th>
+                                <td id="position">{{ variant.protein_position }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Consequence</th>
+                                <td>{{ variant.consequence }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Impact</th>
+                                <td>{{ variant.impact }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Gnomad Population Frequency</th>
+                                <td>{{ variant.gnomad_af }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">InSiGHT Class</th>
+                                <td>{{ variant.insight_class }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <h3>Predictions</h3>
+                    <table id="variants_predictions" class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="col">Ada Score</th>
+                                <td>{{ variant.ada_score }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Rf Score</th>
+                                <td>{{ variant.rf_score }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">CADD (phred)</th>
+                                <td>{{ variant.cadd_phred }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Revel</th>
+                                <td>{{ variant.revel_score }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Maxentscan Ref</th>
+                                <td>{{ variant.maxentscan_ref }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Maxentscan Alt</th>
+                                <td>{{ variant.maxentscan_alt }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Maxentscan Diff</th>
+                                <td>{{ variant.maxentscan_diff }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
 <script type="text/javascript" src="/static/js/variant.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        main("{{ variant.gene }}", {{ interactions|safe }}, {{ pi_interactions|safe }}, {{ pi_interactions_residues|safe }})
+        main("{{ variant.gene }}", {{ interactions | safe }}, {{ pi_interactions | safe }}, {{ pi_interactions_residues | safe }})
     });
 </script>
 {% endblock %}
