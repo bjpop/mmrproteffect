@@ -69,6 +69,11 @@ def parse_args():
                         type=str,
                         required=True,
                         help='CSV file containing variant information')
+    parser.add_argument('--interactions',
+                        metavar='PATH',
+                        type=str,
+                        required=True,
+                        help='Path to folder containing pickle files with interactions')
     parser.add_argument('--log',
                         metavar='LOG_FILE',
                         type=str,
@@ -143,8 +148,7 @@ def variant_page(coordinate):
         if coord in Data.index:
             variant_row = Data.index[coord]
             chain = "A" if variant_row['gene'] == "MSH2" else "B"
-            folder = os.path.join('/'.join(app.root_path.split('/')[:-1]),"data","arpeggio_interactions")
-            pickle_file = os.path.join(folder, "{}_{}".format(chain,variant_row['protein_position']),'interactions.p')
+            pickle_file = os.path.join(Data.interactions, "{}_{}".format(chain,variant_row['protein_position']),'interactions.p')
             interactions = {'interactions':[],'pi_interactions':[],'pi_interactions_residues':[]}
             if os.path.exists(pickle_file):
                 interactions = pickle.load(open(pickle_file,'rb'))
@@ -182,13 +186,13 @@ class Data(object):
                     else:
                         Data.index[coord] = row
                     Data.data.append(row)
+        Data.interactions = options.interactions
 
 @app.route('/download_pymol_session/<gene>/<position>',methods=['GET'])
 def download_pymol_session(gene, position):
     position = position.split(".")[0]
     chain = "A" if gene == "MSH2" else "B"
-    folder = os.path.join('/'.join(app.root_path.split('/')[:-1]),"data","arpeggio_interactions")
-    pse_file = os.path.join(folder, "{}_{}".format(chain,position),'wt.clean.{}.{}.pse'.format(chain,position))
+    pse_file = os.path.join(Data.interactions, "{}_{}".format(chain,position),'wt.clean.{}.{}.pse'.format(chain,position))
 
     return flask.send_file(pse_file, attachment_filename="{}_{}.pse".format(chain,position))
 
