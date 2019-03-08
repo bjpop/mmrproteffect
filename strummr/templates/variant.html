@@ -166,13 +166,12 @@
         <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#variant_metadata_div" aria-expanded="true" aria-controls="#lollipop_plot_div">
             Hide/Show
         </button>
-        <h5>Variant metadata</h5>
+        <h5>Variant information</h5>
     </div>
     <div class="card-body">
         <div id="variant_metadata_div" class="collapse show">
             <div class="row" style="margin-top:10px;">
                 <div class="col">
-                    <h3>Variant Metadata</h3>
                     <table id="variants_metadata" class="table">
                         <tbody>
                             <tr>
@@ -201,19 +200,25 @@
                             </tr>
                             <tr>
                                 <th scope="col">HGVSc</th>
-                                <td>{{ variant.HGVSc }}</td>
+                                <td>{{ variant.hgvsc }}</td>
                             </tr>
                             <tr>
                                 <th scope="col">HGVSp</th>
-                                <td>{{ variant.HGVSp }}</td>
+                                <td>{{ variant.hgvsp }}</td>
                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <table id="variants_metadata" class="table">
+                        <tbody>
                             <tr>
                                 <th scope="col">Genomic Change</th>
                                 <td>{{ variant.genomic_dna_change }}</td>
                             </tr>
                             <tr>
                                 <th scope="col">Coding Sequence Position</th>
-                                <td>{{ variant.CDS_pos }}</td>
+                                <td>{{ variant.cds_position }}</td>
                             </tr>
                             <tr>
                                 <th scope="col">Protein Position</th>
@@ -228,8 +233,12 @@
                                 <td>{{ variant.impact }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">Gnomad Population Frequency</th>
+                                <th scope="col">gnomAD Population Frequency</th>
                                 <td>{{ variant.gnomad_af }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Number of gnomAD homozygotes</th>
+                                <td>{{ variant.num_homozygotes }}</td>
                             </tr>
                             <tr>
                                 <th scope="col">InSiGHT Class</th>
@@ -238,8 +247,22 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card my-5">
+    <div class="card-header">
+        <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#variant_predictions_div" aria-expanded="true" aria-controls="#lollipop_plot_div">
+            Hide/Show
+        </button>
+        <h5>Variant predictions</h5>
+    </div>
+    <div class="card-body">
+        <div id="variant_predictions_div" class="collapse show">
+            <div class="row" style="margin-top:10px;">
                 <div class="col">
-                    <h3>Predictions</h3>
                     <table id="variants_predictions" class="table">
                         <tbody>
                             <tr>
@@ -270,6 +293,160 @@
                                 <th scope="col">Maxentscan Diff</th>
                                 <td>{{ variant.maxentscan_diff }}</td>
                             </tr>
+                            <tr>
+                                <th scope="col">mtr</th>
+                                <td>{{ variant.mtr }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">mtr_genemean</th>
+                                <td>{{ variant.mtr_genemean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">mtr_genemedian</th>
+                                <td>{{ variant.mtr_genemedian }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">diff_mtr_gene_mean</th>
+                                <td>{{ variant.diff_mtr_gene_mean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">diff_mtr_gene_median</th>
+                                <td>{{ variant.diff_mtr_gene_median }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">diff_mtr_genome_mean</th>
+                                <td>{{ variant.diff_mtr_genome_mean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">diff_mtr_genome_median</th>
+                                <td>{{ variant.diff_mtr_genome_median }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ratio_mtr_gene_mean</th>
+                                <td>{{ variant.ratio_mtr_gene_mean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ratio_mtr_gene_median</th>
+                                <td>{{ variant.ratio_mtr_gene_median }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ratio_mtr_genome_mean</th>
+                                <td>{{ variant.ratio_mtr_genome_mean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ratio_mtr_genome_median</th>
+                                <td>{{ variant.ratio_mtr_genome_median }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ToPRO</th>
+                                <td>{{ variant.ToPRO }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ToGLY</th>
+                                <td>{{ variant.ToGLY }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">FromPRO</th>
+                                <td>{{ variant.FromPRO }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">FromGLY</th>
+                                <td>{{ variant.FromGLY }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <table id="variants_predictions" class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="col">Phi</th>
+                                <td>{{ variant.Phi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Psi</th>
+                                <td>{{ variant.Psi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Omega</th>
+                                <td>{{ variant.Omega }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">PositivePhiGLY</th>
+                                <td>{{ variant.PositivePhiGLY }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">provean</th>
+                                <td>{{ variant.provean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">provean_pred</th>
+                                <td>{{ variant.provean_pred }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">sift</th>
+                                <td>{{ variant.sift }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">sift_pred</th>
+                                <td>{{ variant.sift_pred }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">dist_lig</th>
+                                <td>{{ variant.dist_lig }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">dist_na</th>
+                                <td>{{ variant.dist_na }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">dist_ppi</th>
+                                <td>{{ variant.dist_ppi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">pph2</th>
+                                <td>{{ variant.pph2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">pph2_prediction</th>
+                                <td>{{ variant.pph2_prediction }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">mcsm_na</th>
+                                <td>{{ variant.mcsm_na }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">mcsm_ppi</th>
+                                <td>{{ variant.mcsm_ppi }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ddg_encom</th>
+                                <td>{{ variant.ddg_encom }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">dds_encom</th>
+                                <td>{{ variant.dds_encom }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ddg_duet</th>
+                                <td>{{ variant.ddg_duet }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ddg_dynamut</th>
+                                <td>{{ variant.ddg_dynamut }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ddg_mcsm</th>
+                                <td>{{ variant.ddg_mcsm }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">ddg_sdm</th>
+                                <td>{{ variant.ddg_sdm }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">predicted</th>
+                                <td>{{ variant.predicted }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -277,8 +454,6 @@
         </div>
     </div>
 </div>
-
-
 
 <script type="text/javascript" src="/static/js/variant.js"></script>
 
