@@ -52,11 +52,12 @@ $ pip install -U --user /path/to/strummr
 
  * `--pdb FILE` the name of the PDB file used for the MSH2/MSH6 protein complex structure. See `data/2o8c.pdb` for an example.
  * `--variants FILE` the name of the CSV file containing variant information. The file must have column headers. See `data/MSH2_MSH6.all.csv` for an example.
+ * `--interactions PATH` the path to folder containing pickle files with interactions for all mutations mapped on PDB structure. See `data/arpeggio_interactions/` for an example generated using [Arpeggio](https://github.com/harryjubb/arpeggio).
 
 ## Example command line
 
 ```
-$ strummr --pdb 2o8c.pdb --variants MSH2_MSH6.all.csv 
+$ strummr --pdb 2o8c.pdb --variants MSH2_MSH6.all.csv --interactions arpeggio_interactions/
 ```
 This should start up a local web-server on `http://0.0.0.0:5000/` that you can open in your web browser.
 
@@ -66,7 +67,7 @@ Strummr can display usage information on the command line via the `-h` or `--hel
 
 ```
 $ strummr -h
-usage: strummr [-h] [--version] --pdb FILE --variants FILE [--log LOG_FILE]
+usage: strummr [-h] [--version] --pdb FILE --variants FILE --interactions PATH [--log LOG_FILE]
 
 Read one or more FASTA files, compute simple stats for each file
 
@@ -75,6 +76,7 @@ optional arguments:
   --version       show program's version number and exit
   --pdb FILE      pdb file for protein
   --variants FILE data file containing variant information
+  --interactions PATH folder containing pickle files with interactions
   --log LOG_FILE  record program progress in LOG_FILE
 
 ```
