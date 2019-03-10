@@ -46,6 +46,7 @@
 {% block content %}
 {{ super () }}
 
+{% if interactions %}
 <div class="card my-5">
     <div class="card-header">
         <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#interactive_viewer_div" aria-expanded="true" aria-controls="#lollipop_plot_div">
@@ -160,6 +161,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="card my-5">
     <div class="card-header">
@@ -376,71 +378,71 @@
                                 <td>{{ variant.PositivePhiGLY }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">provean</th>
+                                <th scope="col">Provean Score</th>
                                 <td>{{ variant.provean }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">provean_pred</th>
+                                <th scope="col">Provean Prediction</th>
                                 <td>{{ variant.provean_pred }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">sift</th>
+                                <th scope="col">SIFT Score</th>
                                 <td>{{ variant.sift }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">sift_pred</th>
+                                <th scope="col">SIFT Prediction</th>
                                 <td>{{ variant.sift_pred }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">dist_lig</th>
+                                <th scope="col">Distance to Ligand</th>
                                 <td>{{ variant.dist_lig }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">dist_na</th>
+                                <th scope="col">Distance to NA</th>
                                 <td>{{ variant.dist_na }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">dist_ppi</th>
+                                <th scope="col">Distance to PPI Interface</th>
                                 <td>{{ variant.dist_ppi }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">pph2</th>
+                                <th scope="col">PolyPhen2 Score</th>
                                 <td>{{ variant.pph2 }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">pph2_prediction</th>
+                                <th scope="col">PolyPhen2 Prediction</th>
                                 <td>{{ variant.pph2_prediction }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">mcsm_na</th>
+                                <th scope="col">&Delta;&Delta;G mCSM-NA</th>
                                 <td>{{ variant.mcsm_na }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">mcsm_ppi</th>
+                                <th scope="col">&Delta;&Delta;G mCSM-PPI</th>
                                 <td>{{ variant.mcsm_ppi }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">ddg_encom</th>
+                                <th scope="col">&Delta;&Delta;G ENCoM</th>
                                 <td>{{ variant.ddg_encom }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">dds_encom</th>
+                                <th scope="col">&Delta;&Delta;S<sub>Vib</sub> ENCoM</th>
                                 <td>{{ variant.dds_encom }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">ddg_duet</th>
+                                <th scope="col">&Delta;&Delta;G DUET</th>
                                 <td>{{ variant.ddg_duet }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">ddg_dynamut</th>
+                                <th scope="col">&Delta;&Delta;G DynaMut</th>
                                 <td>{{ variant.ddg_dynamut }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">ddg_mcsm</th>
+                                <th scope="col">&Delta;&Delta;G mCSM</th>
                                 <td>{{ variant.ddg_mcsm }}</td>
                             </tr>
                             <tr>
-                                <th scope="col">ddg_sdm</th>
+                                <th scope="col">&Delta;&Delta;G SDM</th>
                                 <td>{{ variant.ddg_sdm }}</td>
                             </tr>
                             <tr>
