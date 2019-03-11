@@ -1024,26 +1024,26 @@ function main(gene_symbol) {
 
     /* event handlers */
     $("#plot_x_axis").change(function() {
-        plot_variant_attributes(gene_symbol);
+        plot_variant_attributes_two_variables(gene_symbol);
     });
 
     /* event handlers */
     $("#plot_y_axis").change(function() {
-        plot_variant_attributes(gene_symbol);
+        plot_variant_attributes_two_variables(gene_symbol);
     });
 
     /* event handlers */
     $("#log_x_axis").change(function() {
-        plot_variant_attributes(gene_symbol);
+        plot_variant_attributes_two_variables(gene_symbol);
     });
 
     /* event handlers */
     $("#log_y_axis").change(function() {
-        plot_variant_attributes(gene_symbol);
+        plot_variant_attributes_two_variables(gene_symbol);
     });
 
     /* set up the axis options for plotting the variant attributes */
-    set_plot_select_options();
+    set_plot_select_options_both_axes();
 
     /* Display basic information about this particular gene */
     gene_metadata(gene_symbol);
@@ -1063,7 +1063,7 @@ function main(gene_symbol) {
             table = show_variants_table();
             global['variants_table'] = table;
             visualise_protein_structure();
-            plot_variant_attributes(gene_symbol);
+            plot_variant_attributes_two_variables(gene_symbol);
         }
     });
 }

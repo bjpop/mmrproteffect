@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}All Variants{% endblock %}
+{% block title %}Variant Details{% endblock %}
 {% block extra_css %}
 <style>
     .pi-pi{
@@ -42,7 +42,6 @@
     }
 </style>
 {% endblock %}
-{% set active_page = "variants" %}
 {% block content %}
 {{ super () }}
 
@@ -457,11 +456,35 @@
     </div>
 </div>
 
+<div class="card my-5">
+    <div class="card-header">
+        <div class="float-right">
+            <button class="btn btn-outline-primary btn-sm" type="button" data-toggle="collapse" data-target="#variant_attribute_distribution_div" aria-expanded="true" aria-controls="#population_freq_chart_div">
+                Hide/Show
+            </button>
+        </div>
+        <h5>Variant attribute distribution</h5>
+    </div>
+    <div class="card-body">
+        <div id="variant_attribute_distribution_div" class="collapse show">
+
+            <div class="form-group">
+                <label for="plot_x_axis">Attribute</label>
+                <select id="plot_x_axis" class="selectpicker">
+                </select>
+            </div>
+
+            <div id="variant_attributes_plot"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/js/plot_variant_attributes.js"></script>
 <script type="text/javascript" src="/static/js/variant.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        main("{{ variant.gene }}", {{ interactions | safe }}, {{ pi_interactions | safe }}, {{ pi_interactions_residues | safe }})
+        main("{{ variant.gene }}", {{ variant | tojson }}, {{ interactions | safe }}, {{ pi_interactions | safe }}, {{ pi_interactions_residues | safe }})
     });
 </script>
 {% endblock %}

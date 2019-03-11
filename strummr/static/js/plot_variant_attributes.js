@@ -56,22 +56,162 @@ var plot_axis_types = {
     'predicted': 'categorical',
 };
 
-function set_plot_select_options() {
+// Set the axes separately to make the code more reusable.
+// Can be used for plots that compare two variables, and
+// also plots that consider a single variable
+function set_plot_select_options_both_axes() {
+    set_plot_select_options_x_axis();
+    set_plot_select_options_y_axis();
+}
+
+function set_plot_select_options_x_axis() {
     Object.keys(plot_axis_types).forEach(key => {
         var x_options = $('#plot_x_axis')
             .append($("<option></option>")
                 .attr("value", key)
                 .text(key));
+    });
+    $('#plot_x_axis').find('option[value="insight_class"]').attr("selected", "selected");
+}
+
+function set_plot_select_options_y_axis() {
+    Object.keys(plot_axis_types).forEach(key => {
         var y_options = $('#plot_y_axis')
             .append($("<option></option>")
                 .attr("value", key)
                 .text(key));
     });
-    $('#plot_x_axis').find('option[value="insight_class"]').attr("selected", "selected");
     $('#plot_y_axis').find('option[value="predicted"]').attr("selected", "selected");
 }
 
-function plot_variant_attributes(gene_symbol) {
+function plot_variant_attributes_one_variable(gene_symbol, variant_info) {
+
+    var selected_plot_x_axis = document.getElementById("plot_x_axis");
+    var selected_plot_x_axis_value = selected_plot_x_axis.options[selected_plot_x_axis.selectedIndex].value;
+    var x_axis_type = plot_axis_types[selected_plot_x_axis_value];
+
+    if (x_axis_type === 'categorical') {
+        bar_plot_one_variable(gene_symbol, selected_plot_x_axis_value, variant_info);
+    } else if (x_axis_type === 'numerical') {
+        histogram_one_variable(gene_symbol, selected_plot_x_axis_value, variant_info);
+    }
+}
+
+function histogram_one_variable(gene_symbol, x_axis_attribute, variant_info) {
+
+    var attribute_values = [];
+
+    if (x_axis_attribute in variant_info) {
+       this_variant_group = variant_info[x_axis_attribute];
+    }
+
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
+        if (gene_symbol === null || v.gene == gene_symbol) {
+            var x_value = parseFloat(v[x_axis_attribute]);
+            if (x_value) {
+                attribute_values.push(x_value);
+            }
+        }
+    }
+
+    var default_color = 'rgba(204,204,204,1)';
+    var highlight_color = 'rgba(222,45,38,0.8)';
+
+    var plot_traces = [{
+        x: attribute_values,
+        type: 'histogram',
+        name: x_axis_attribute,
+    }];
+
+    var layout = {
+        title: {
+            text: x_axis_attribute,
+        },
+        yaxis: {
+            autorange: true,
+            title: "count",
+        },
+        xaxis: {
+            title: x_axis_attribute,
+        },
+        height: 600,
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+}
+
+function bar_plot_one_variable(gene_symbol, x_axis_attribute, variant_info) {
+
+    var group_counts = {};
+    var this_variant_group = null;
+
+    if (x_axis_attribute in variant_info) {
+       this_variant_group = variant_info[x_axis_attribute];
+    }
+
+    for (var i = 0; i < global['variant_information'].length; i++) {
+        var v = global['variant_information'][i];
+        if (gene_symbol === null || v.gene == gene_symbol) {
+            var x_value = v[x_axis_attribute];
+            if (x_value) {
+                if (!(x_value in group_counts)) {
+                    group_counts[x_value] = 0;
+                }
+                group_counts[x_value]++;
+            }
+        }
+    }
+
+    var x_axis_labels = [];
+    var y_counts = [];
+    var bar_colors = [];
+    var default_color = 'rgba(204,204,204,1)';
+    var highlight_color = 'rgba(222,45,38,0.8)';
+
+    Object.keys(group_counts).forEach(group => {
+        x_axis_labels.push(group);
+    });
+    x_axis_labels.sort();
+
+    for (var i = 0; i < x_axis_labels.length; i++) {
+        var this_x_label = x_axis_labels[i];
+        y_counts.push(group_counts[this_x_label]);
+        if (this_x_label === this_variant_group) {
+            bar_colors.push(highlight_color);
+        }
+        else {
+            bar_colors.push(default_color);
+        }
+    }
+
+    var plot_traces = [{
+        y: y_counts,
+        x: x_axis_labels,
+        type: 'bar',
+        name: x_axis_attribute,
+        marker: {color: bar_colors},
+    }];
+
+    var layout = {
+        title: {
+            text: x_axis_attribute,
+        },
+        yaxis: {
+            autorange: true,
+            title: "count",
+        },
+        xaxis: {
+            title: x_axis_attribute,
+            type: 'category',
+        },
+        height: 600,
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+}
+
+function plot_variant_attributes_two_variables(gene_symbol) {
 
     var selected_plot_x_axis = document.getElementById("plot_x_axis");
     var selected_plot_x_axis_value = selected_plot_x_axis.options[selected_plot_x_axis.selectedIndex].value;

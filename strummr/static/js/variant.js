@@ -472,7 +472,7 @@ function initialise_pdb_component(component) {
     global['pdb_component'] = component;
 }
 
-function main(gene_symbol, interactions, pi_interactions, pi_interactions_residues) {
+function main(gene_symbol, variant_info, interactions, pi_interactions, pi_interactions_residues) {
 
     if (interactions.length != 0){
         $("#3DViewer").show();
@@ -498,4 +498,20 @@ function main(gene_symbol, interactions, pi_interactions, pi_interactions_residu
 
         visualise_protein_structure();
     }
+
+    $("#plot_x_axis").change(function() {
+        plot_variant_attributes_one_variable(gene_symbol, variant_info);
+    });
+
+    set_plot_select_options_x_axis();
+
+    $.ajax({
+        type: "GET",
+        url: "/variants_data",
+        cache: false,
+        success: function(response) {
+            global['variant_information'] = response.data;
+            plot_variant_attributes_one_variable(gene_symbol, variant_info);
+        }
+    });
 }

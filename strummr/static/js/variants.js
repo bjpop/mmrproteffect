@@ -267,26 +267,26 @@ function main() {
 
     /* event handlers */
     $("#plot_x_axis").change(function() {
-        plot_variant_attributes(null);
+        plot_variant_attributes_two_variables(null);
     });
 
     /* event handlers */
     $("#plot_y_axis").change(function() {
-        plot_variant_attributes(null);
+        plot_variant_attributes_two_variables(null);
     });
 
     /* event handlers */
     $("#log_x_axis").change(function() {
-        plot_variant_attributes(null);
+        plot_variant_attributes_two_variables(null);
     });
 
     /* event handlers */
     $("#log_y_axis").change(function() {
-        plot_variant_attributes(null);
+        plot_variant_attributes_two_variables(null);
     });
 
     /* set up the axis options for plotting the variant attributes */
-    set_plot_select_options();
+    set_plot_select_options_both_axes();
 
     $.ajax({
         type: "GET",
@@ -296,7 +296,7 @@ function main() {
             global['variant_information'] = response.data;
             table = show_variants_table();
             global['variants_table'] = table;
-            plot_variant_attributes(null);
+            plot_variant_attributes_two_variables(null);
         }
     });
 }
