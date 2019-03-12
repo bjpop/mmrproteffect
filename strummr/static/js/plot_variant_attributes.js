@@ -102,7 +102,7 @@ function histogram_one_variable(gene_symbol, x_axis_attribute, variant_info) {
     var attribute_values = [];
 
     if (x_axis_attribute in variant_info) {
-       this_variant_group = variant_info[x_axis_attribute];
+       this_variant_value = parseFloat(variant_info[x_axis_attribute]);
     }
 
     for (var i = 0; i < global['variant_information'].length; i++) {
@@ -115,9 +115,67 @@ function histogram_one_variable(gene_symbol, x_axis_attribute, variant_info) {
         }
     }
 
+    var min_value = Math.min(...attribute_values);
+    var max_value = Math.max(...attribute_values);
+    var histGenerator = d3.histogram().domain([min_value,max_value]).thresholds(19);
+    var bins = histGenerator(attribute_values);
+    var bin_counts = [];
+    var bin_bounds = [];
+    var bar_colors = [];
     var default_color = 'rgba(204,204,204,1)';
     var highlight_color = 'rgba(222,45,38,0.8)';
 
+    for (var i = 0; i < bins.length; i++) {
+        var this_bin = bins[i];
+        bin_counts.push(this_bin.length);
+        bin_bounds.push(parseFloat(this_bin.x0).toFixed(2) + " : " + parseFloat(this_bin.x1).toFixed(2));
+        // The last bin is inclusive in both bounds
+        if (i == bins.length - 1) {
+            if (this_variant_value >= this_bin.x0 && this_variant_value <= this_bin.x1) {
+                bar_colors.push(highlight_color);
+            }
+            else {
+                bar_colors.push(default_color);
+            }
+        }
+        // all other bins are inclusive in the lower bound and exclusive in the upper bound
+        else {
+            if (this_variant_value >= this_bin.x0 && this_variant_value < this_bin.x1) {
+                bar_colors.push(highlight_color);
+            }
+            else {
+                bar_colors.push(default_color);
+            }
+        }
+    }
+
+    var plot_traces = [{
+        y: bin_counts,
+        //x: x_axis_labels,
+        x: bin_bounds,
+        type: 'bar',
+        name: x_axis_attribute,
+        marker: {color: bar_colors},
+    }];
+
+    var layout = {
+        title: {
+            text: x_axis_attribute,
+        },
+        yaxis: {
+            autorange: true,
+            title: "count",
+        },
+        xaxis: {
+            title: x_axis_attribute,
+            type: 'category',
+        },
+        height: 600,
+    };
+
+    Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+
+/*
     var plot_traces = [{
         x: attribute_values,
         type: 'histogram',
@@ -139,6 +197,7 @@ function histogram_one_variable(gene_symbol, x_axis_attribute, variant_info) {
     };
 
     Plotly.newPlot('variant_attributes_plot', plot_traces, layout);
+    */
 }
 
 function bar_plot_one_variable(gene_symbol, x_axis_attribute, variant_info) {
