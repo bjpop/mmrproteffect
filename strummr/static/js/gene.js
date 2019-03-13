@@ -1043,7 +1043,7 @@ function main(gene_symbol) {
     });
 
     /* set up the axis options for plotting the variant attributes */
-    set_plot_select_options_both_axes();
+    //set_plot_select_options_both_axes();
 
     /* Display basic information about this particular gene */
     gene_metadata(gene_symbol);
