@@ -286,7 +286,7 @@ function main() {
     });
 
     /* set up the axis options for plotting the variant attributes */
-    set_plot_select_options_both_axes();
+    //set_plot_select_options_both_axes();
 
     $.ajax({
         type: "GET",
