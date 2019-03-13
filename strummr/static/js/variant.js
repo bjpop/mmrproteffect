@@ -503,7 +503,7 @@ function main(gene_symbol, variant_info, interactions, pi_interactions, pi_inter
         plot_variant_attributes_one_variable(gene_symbol, variant_info);
     });
 
-    set_plot_select_options_x_axis();
+    //set_plot_select_options_x_axis();
 
     $.ajax({
         type: "GET",
