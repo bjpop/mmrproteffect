@@ -40,6 +40,15 @@
         color:white;
         font-size:inherit;
     }
+    .neutral,.stabilise,.increase,.benign{
+        color:#1414C4;
+    }
+    .deleterious,.destabilise,.damaging,.decrease,.pathogenic,.disease-causing{
+        color:#e53935;
+    }
+    .benign,.pathogenic{
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -120,7 +129,7 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <div class="row" style="margin-top:10px;">
+                            <div class="row" style="margin:10px auto;">
                                 <div class="col">
                                     <button class="btn btn-outline-secondary" type="button" id="reset_visualisation_button"><i class="fas fa-redo"></i> Reset</button>
                                 </div>
@@ -267,92 +276,84 @@
                     <table id="variants_predictions" class="table">
                         <tbody>
                             <tr>
-                                <th scope="col">Ada Score</th>
-                                <td>{{ variant.ada_score }}</td>
+                                <th scope="col">&Delta;&Delta;G Affinity mCSM-NA</th>
+                                {% if variant.mcsm_na %}
+                                <td class="{% if variant.mcsm_na|float <= 0 %} decrease {% else %} increase {% endif %}">{{ '%0.2f' % variant.mcsm_na|float }} kcal.mol<sup>-1</sup> ({% if variant.mcsm_na|float <= 0 %}decrease{% else %}increase{% endif %} affinity)</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Rf Score</th>
-                                <td>{{ variant.rf_score }}</td>
+                                <th scope="col">&Delta;&Delta;G Affinity mCSM-PPI</th>
+                                {% if variant.mcsm_ppi %}
+                                <td class="{% if variant.mcsm_ppi|float <= 0 %} decrease {% else %} increase {% endif %}">{{ '%0.2f' % variant.mcsm_ppi|float }} kcal.mol<sup>-1</sup> ({% if variant.mcsm_ppi|float <= 0 %}decrease{% else %}increase{% endif %} affinity)</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">CADD (phred)</th>
-                                <td>{{ variant.cadd_phred }}</td>
+                                <th scope="col">&Delta;&Delta;G Stability ENCoM</th>
+                                {% if variant.ddg_encom %}
+                                <td class="{% if variant.ddg_encom|float >= 0.5 %} stabilise {% else %} destabilise {% endif %}">{{ '%0.2f' % variant.ddg_encom|float }} kcal.mol<sup>-1</sup> ({% if variant.ddg_encom|float >= 0.5 %}stabilise{% else %}destabilise{% endif %})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Revel</th>
-                                <td>{{ variant.revel_score }}</td>
+                                <th scope="col">&Delta;&Delta;S Vibrational Entropy ENCoM</th>
+                                {% if variant.dds_encom %}
+                                <td class="{% if variant.dds_encom|float >= 0 %} destabilise {% else %} stabilise {% endif %}">{{ '%0.2f' % variant.dds_encom|float }} kcal.mol<sup>-1</sup>.K<sup>-1</sup> ({% if variant.dds_encom|float >= 0 %}increase{% else %}decrease{% endif %} flexibility)</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Maxentscan Ref</th>
-                                <td>{{ variant.maxentscan_ref }}</td>
+                                <th scope="col">&Delta;&Delta;G Stability DUET</th>
+                                {% if variant.ddg_duet %}
+                                <td class="{% if variant.ddg_duet|float >= 0 %} stabilise {% else %} destabilise {% endif %}">{{ '%0.2f' % variant.ddg_duet|float }} kcal.mol<sup>-1</sup> ({% if variant.ddg_duet|float >= 0 %}stabilise{% else %}destabilise{% endif %})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Maxentscan Alt</th>
-                                <td>{{ variant.maxentscan_alt }}</td>
+                                <th scope="col">&Delta;&Delta;G Stability DynaMut</th>
+                                {% if variant.ddg_dynamut %}
+                                <td class="{% if variant.ddg_dynamut|float >= 0 %} stabilise {% else %} destabilise {% endif %}">{{ '%0.2f' % variant.ddg_dynamut|float }} kcal.mol<sup>-1</sup> ({% if variant.ddg_dynamut|float >= 0 %}stabilise{% else %}destabilise{% endif %})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Maxentscan Diff</th>
-                                <td>{{ variant.maxentscan_diff }}</td>
+                                <th scope="col">&Delta;&Delta;G Stability mCSM</th>
+                                {% if variant.ddg_mcsm %}
+                                <td class="{% if variant.ddg_mcsm|float >= 0 %} stabilise {% else %} destabilise {% endif %}">{{ '%0.2f' % variant.ddg_mcsm|float }} kcal.mol<sup>-1</sup> ({% if variant.ddg_mcsm|float >= 0 %}stabilise{% else %}destabilise{% endif %})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">mtr</th>
-                                <td>{{ variant.mtr }}</td>
+                                <th scope="col">&Delta;&Delta;G Stability SDM</th>
+                                {% if variant.ddg_sdm %}
+                                <td class="{% if variant.ddg_sdm|float >= 0 %} stabilise {% else %} destabilise {% endif %}">{{ '%0.2f' % variant.ddg_sdm|float }} kcal.mol<sup>-1</sup> ({% if variant.ddg_sdm|float >= 0 %}stabilise{% else %}destabilise{% endif %})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">mtr_genemean</th>
-                                <td>{{ variant.mtr_genemean }}</td>
+                                <th scope="col">Conservation Score REVEL</th>
+                                {% if variant.revel_score %}
+                                <td class="{% if variant.revel_score|float >= 0.45 %} disease-causing {% else %} neutral {% endif %}">{{ '%0.2f' % variant.revel_score|float }} ({% if variant.revel_score|float >= 0.45 %}disease causing{% else %}neutral{% endif %})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">mtr_genemedian</th>
-                                <td>{{ variant.mtr_genemedian }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">diff_mtr_gene_mean</th>
-                                <td>{{ variant.diff_mtr_gene_mean }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">diff_mtr_gene_median</th>
-                                <td>{{ variant.diff_mtr_gene_median }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">diff_mtr_genome_mean</th>
-                                <td>{{ variant.diff_mtr_genome_mean }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">diff_mtr_genome_median</th>
-                                <td>{{ variant.diff_mtr_genome_median }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">ratio_mtr_gene_mean</th>
-                                <td>{{ variant.ratio_mtr_gene_mean }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">ratio_mtr_gene_median</th>
-                                <td>{{ variant.ratio_mtr_gene_median }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">ratio_mtr_genome_mean</th>
-                                <td>{{ variant.ratio_mtr_genome_mean }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">ratio_mtr_genome_median</th>
-                                <td>{{ variant.ratio_mtr_genome_median }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">ToPRO</th>
-                                <td>{{ variant.ToPRO }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">ToGLY</th>
-                                <td>{{ variant.ToGLY }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">FromPRO</th>
-                                <td>{{ variant.FromPRO }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">FromGLY</th>
-                                <td>{{ variant.FromGLY }}</td>
+                                <th scope="col">Conservation Score Provean</th>
+                                {% if variant.provean %}
+                                <td class="{{ variant.provean_pred|lower }}">{{ '%0.2f' % variant.provean|float }} ({{ variant.provean_pred|lower }})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                         </tbody>
                     </table>
@@ -361,92 +362,84 @@
                     <table id="variants_predictions" class="table">
                         <tbody>
                             <tr>
-                                <th scope="col">Phi</th>
-                                <td>{{ variant.Phi }}</td>
+                                <th scope="col">Tolerance Score SIFT</th>
+                                {% if variant.sift %}
+                                <td class="{{ variant.sift_pred|lower }}">{{ '%0.2f' % variant.sift|float }} ({{ variant.sift_pred|lower }})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Psi</th>
-                                <td>{{ variant.Psi }}</td>
+                                <th scope="col">Damaging Score PolyPhen2</th>
+                                {% if variant.pph2 %}
+                                <td class="{{ variant.pph2_prediction|lower }}">{{ '%0.2f' % variant.pph2|float }} ({{ variant.pph2_prediction }})</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Omega</th>
-                                <td>{{ variant.Omega }}</td>
+                                <th scope="col">Missense Tolerance Ratio</th>
+                                {% if variant.mtr %}
+                                <td>{{ '%0.2f' % variant.mtr|float }}</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">PositivePhiGLY</th>
-                                <td>{{ variant.PositivePhiGLY }}</td>
+                                <th scope="col">Phi angle</th>
+                                {% if variant.Phi %}
+                                <td>{{ '%0.2f' % variant.Phi|float }}&deg;</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Provean Score</th>
-                                <td>{{ variant.provean }}</td>
+                                <th scope="col">Psi angle</th>
+                                {% if variant.Psi %}
+                                <td>{{ '%0.2f' % variant.Psi|float }}&deg;</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">Provean Prediction</th>
-                                <td>{{ variant.provean_pred }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">SIFT Score</th>
-                                <td>{{ variant.sift }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">SIFT Prediction</th>
-                                <td>{{ variant.sift_pred }}</td>
+                                <th scope="col">Omega angle</th>
+                                {% if variant.Omega %}
+                                <td>{{ '%0.2f' % variant.Omega|float }}&deg;</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <th scope="col">Distance to Ligand</th>
-                                <td>{{ variant.dist_lig }}</td>
+                                {% if variant.dist_lig %}
+                                <td>{{ '%0.2f' % variant.dist_lig|float }} &#8491;</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <th scope="col">Distance to NA</th>
-                                <td>{{ variant.dist_na }}</td>
+                                {% if variant.dist_na %}
+                                <td>{{ '%0.2f' % variant.dist_na|float }} &#8491;</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <th scope="col">Distance to PPI Interface</th>
-                                <td>{{ variant.dist_ppi }}</td>
+                                {% if variant.dist_ppi %}
+                                <td>{{ '%0.2f' % variant.dist_ppi|float }} &#8491;</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th scope="col">PolyPhen2 Score</th>
-                                <td>{{ variant.pph2 }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">PolyPhen2 Prediction</th>
-                                <td>{{ variant.pph2_prediction }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G mCSM-NA</th>
-                                <td>{{ variant.mcsm_na }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G mCSM-PPI</th>
-                                <td>{{ variant.mcsm_ppi }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G ENCoM</th>
-                                <td>{{ variant.ddg_encom }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;S<sub>Vib</sub> ENCoM</th>
-                                <td>{{ variant.dds_encom }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G DUET</th>
-                                <td>{{ variant.ddg_duet }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G DynaMut</th>
-                                <td>{{ variant.ddg_dynamut }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G mCSM</th>
-                                <td>{{ variant.ddg_mcsm }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">&Delta;&Delta;G SDM</th>
-                                <td>{{ variant.ddg_sdm }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">predicted</th>
-                                <td>{{ variant.predicted }}</td>
+                                <th scope="col">Prediction Outcome</th>
+                                {% if variant.predicted %}
+                                <td class="{{ variant.predicted|lower }}">{{ variant.predicted|capitalize }}</td>
+                                {% else %}
+                                <td>-</td>
+                                {% endif %}
                             </tr>
                         </tbody>
                     </table>
@@ -472,61 +465,34 @@
                 <label for="plot_x_axis">Attribute</label>
                 <!-- <select id="plot_x_axis" class="selectpicker"> -->
                 <select id="plot_x_axis" class="selectpicker">
-                    <option>gene</option>
-                    <option selected="selected">insight_class</option>
-                    <option>consequence</option>
-                    <option>impact</option>
-                    <option>exon</option>
-                    <option>intron</option>
-                    <option>cdna_position</option>
-                    <option>cds_position</option>
-                    <option>protein_position</option>
-                    <option>ada_score</option>
-                    <option>rf_score</option>
-                    <option>cadd_phred</option>
-                    <option>revel_score</option>
-                    <option>maxentscan_alt</option>
-                    <option>maxentscan_diff</option>
-                    <option>maxentscan_ref</option>
-                    <option>gnomad_af</option>
-                    <option>num_homozygotes</option>
-                    <option>mtr</option>
-                    <option>mtr_genemean</option>
-                    <option>mtr_genemedian</option>
-                    <option>diff_mtr_gene_mean</option>
-                    <option>diff_mtr_gene_median</option>
-                    <option>diff_mtr_genome_mean</option>
-                    <option>diff_mtr_genome_median</option>
-                    <option>ratio_mtr_gene_mean</option>
-                    <option>ratio_mtr_gene_median</option>
-                    <option>ratio_mtr_genome_mean</option>
-                    <option>ratio_mtr_genome_median</option>
-                    <option>ToPRO</option>
-                    <option>ToGLY</option>
-                    <option>FromPRO</option>
-                    <option>FromGLY</option>
-                    <option>Phi</option>
-                    <option>Psi</option>
-                    <option>Omega</option>
-                    <option>PositivePhiGLY</option>
-                    <option>provean</option>
-                    <option>provean_pred</option>
-                    <option>sift</option>
-                    <option>sift_pred</option>
-                    <option>dist_lig</option>
-                    <option>dist_na</option>
-                    <option>dist_ppi</option>
-                    <option>pph2</option>
-                    <option>pph2_prediction</option>
-                    <option>mcsm_na</option>
-                    <option>mcsm_ppi</option>
-                    <option>ddg_encom</option>
-                    <option>dds_encom</option>
-                    <option>ddg_duet</option>
-                    <option>ddg_dynamut</option>
-                    <option>ddg_mcsm</option>
-                    <option>ddg_sdm</option>
-                    <option>predicted</option>
+                    <option value="gene">Gene</option>
+                    <option selected="selected" value="insight_class"i>InSiGHT Class</option>
+                    <option value="consequence">Consequence</option>
+                    <option value="impact">Impact</option>
+                    <option value="exon">Exon</option>
+                    <option value="intron">Intron</option>
+                    <option value="cds_position">CDNA position</option>
+                    <option value="cds_position">CDS position</option>
+                    <option value="protein_position">Protein position</option>
+                    <option value="revel_score">Conservation Score REVEL</option>
+                    <option value="gnomad_af">gnomAD Population Frequency</option>
+                    <option value="num_homozygotes">Number of gnomAD homozygotes</option>
+                    <option value="mtr">Missense Tolerance Ratio</option>
+                    <option value="provean">Conservation Score Provean</option>
+                    <option value="sift">Conservation Score SIFT</option>
+                    <option value="dist_lig">Distance to Ligand</option>
+                    <option value="dist_na">Distance to NA</option>
+                    <option value="dist_ppi">Distance to PPI Interface</option>
+                    <option value="pph2">Damaging Score PolyPhen2</option>
+                    <option value="mcsm_na">&Delta;&Delta;G Affinity mCSM-NA</option>
+                    <option value="mcsm_ppi">&Delta;&Delta;G Affinity mCSM-PPI</option>
+                    <option value="ddg_encom">&Delta;&Delta;G Stability ENCoM</option>
+                    <option value="dds_encom">&Delta;&Delta;S Vibrational Entropy ENCoM</option>
+                    <option value="ddg_duet">&Delta;&Delta;G Stability DUET</option>
+                    <option value="ddg_dynamut">&Delta;&Delta;G Stability DynaMut</option>
+                    <option value="ddg_mcsm">&Delta;&Delta;G Stability mCSM</option>
+                    <option value="ddg_sdm">&Delta;&Delta;G Stability SDM</option>
+                    <option value="predicted">Prediction Outcome</option>
                 </select>
             </div>
 
