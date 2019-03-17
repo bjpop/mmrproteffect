@@ -542,7 +542,12 @@ function get_protein_info(gene_symbol) {
 }
 
 function make_insight_url(gene_symbol) {
-    var url = "www.insight-database.org/genes/" + gene_symbol;
+    if (gene_symbol === 'MSH2') {
+        url = "www.insight-database.org/#tabs-4";
+    }
+    else if (gene_symbol === 'MSH6') {
+        url = "www.insight-database.org/#tabs-5";
+    }
     return "<a href=https://" + url + ">" + url + "</a>";
 }
 
