@@ -6,15 +6,8 @@
 
 <h1 class="display-4 my-5">{{ symbol }}</h1>
 
-<hr>
-
-<dl class="row">
-    <dt class="col-sm-3">Uniprot entry for {{ symbol }}</dt>
-    <dd class="col-sm-9" id="uniprot_link"></dd>
-
-    <dt class="col-sm-3">InSiGHT entry for {{ symbol }}</dt>
-    <dd class="col-sm-9" id="insight_link"></dd>
-</dl>
+<a class="btn btn-outline-info btn-sm" id="uniprot_link" href="" role="button">Uniprot</a>
+<a class="btn btn-outline-info btn-sm" id="insight_link" href="" role="button">InSiGHT</a>
 
 <hr>
 
@@ -79,7 +72,7 @@
         <button class="btn btn-outline-primary btn-sm float-right" type="button" data-toggle="collapse" data-target="#protein_structure_div" aria-expanded="true" aria-controls="#protein_structure_div">
             Hide/Show
         </button>
-        <h5>Protein Structure for {{symbol}}</h5>
+        <h5>Protein Structure for MutSα</h5>
     </div>
     <div class="card-body">
         <div id="protein_structure_div" class="collapse show">

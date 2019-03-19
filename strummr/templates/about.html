@@ -6,8 +6,410 @@
 
 <h1 class="display-4 my-5">About</h1>
 
-<p>
-This page will contain information about the data provided by StruMMR.
-</p>
+<ul>
+    <li><a href="#gene_specific_information">Gene specific information for MSH2 and MSH6</a></li>
+    <ul>
+        <li><a href="#protein_lollipop">Protein lollipop plots</a></li>
+        <li><a href="#protein_3d_plot">Interactive 3D visualisation of the protein structure for MutSα</a></li>
+        <li><a href="#gene_variant_table">Table of all unique variants for a gene from the InSiGHT database</a></li>
+        <li><a href="#highlighting_variant_3d">Highlighting variant positions in the 3D structure</a></li>
+        <li><a href="#gene_attributes_plot">Comparison plots of variant attributes</a></li>
+    </ul>
+    <li><a href="#all_variants">Aggregated information for all variants in MSH2 and MSH6</a></li>
+    <li><a href="#single_variant">Information about a specific variant</a></li>
+    <ul>
+        <li><a href="#selecting_variant">Selecting a specific variant to display</a></li>
+        <li><a href="#variant_interactions">Interactive 3D visualisation of atomic interactions at variant residue</a></li>
+        <li><a href="#variant_information">Basic metadata for a single variant</a></li>
+        <li><a href="#variant_predictions"><i>In silico</i> predictions about a variant's structural and functional effect and pathogenicity</a></li>
+        <li><a href="#variant_distribution_plot">Plot of variant attribute distribution, highlighting the value associated with a specific variant</a></li>
+    </ul>
+    <li><a href="#acknowledgements">Acknowledgements</a></li>
+    <li><a href="#source_code">Source Code</a></li>
+</ul>
+
+<hr>
+
+<div id="gene_specific_information">
+    <h2>Gene specific information for MSH2 and MSH6</h2>
+
+    <div class="my-3">
+        Information for individual genes can be found on the MSH2 and MSH6 pages.
+        These can be selected from the menu bar at the top of the screen, as highlighted in red below.
+    </div>
+
+    <img src="/static/images/gene_menu_bar_about.png" height="50" alt="gene menu selection" class="img-thumbnail">
+
+    <div class="my-3">
+        Each gene page contains 4 main sections:
+        <ol>
+            <li>A lollipop plot showing protein-coding variants against the
+                <a href="https://pfam.xfam.org/">Pfam domains</a> for the protein product of the gene.</li>
+            <li>An interactive 3D protein structure for the
+                <a href="https://www.rcsb.org/structure/2O8C">MutSα 3D crystal structure</a>.</li>
+            <li>A table of all the unique variants for this gene contained in the <a href="https://www.insight-database.org/">InSiGHT database</a>.</li>
+            <li>An interactive plot that allows any two attributes of variants for the gene to be compared.</li>
+        </ol>
+        Each section is described below.
+    </div>
+
+    <div class="my-3" id="protein_lollipop">
+        <h3>Protein lollipop plots</h3>
+
+        <div class="my-3">
+            An example lollipop plot is shown below for MSH2.
+        </div>
+
+        <img src="/static/images/gene_lollipop_about.png" height="80" alt="gene lollipop plot" class="img-thumbnail">
+
+        <div class="my-3">
+            Key features of the plot are marked by letters A-E:
+            <ol type="A">
+                <li>Variants classified in the InSiGHT database are colour coded
+                    according to indicated scheme.</li>
+                <li>The lollipop plot can be hidden or displayed using the Hide/Show button.</li>
+                <li>Individual variants are indicated at their protein coding position by a ball and stick.</li>
+                <li>The coordinates of amino acids in the protein are indicated below the Pfam domains.</li>
+                <li>The type of variants shown in the plot can be selected according to their InSiGHT class,
+                    predicted impact on protein function, and their consequence. Variant impact and
+                    consequence annotations are provided by the
+                    <a href="https://asia.ensembl.org/info/docs/tools/vep/index.html">Variant Effect Predictor (VEP)</a>.
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="my-3" id="protein_3d_plot">
+        <h3>Interactive 3D visualisation of the protein structure for MutSα</h3>
+
+        <div class="my-3">
+            An interactive 3D visualisation of the protein structure for
+            human MutSα (MSH2/MSH6) bound to ADP and an O6-methyl-guanine T mispair,
+            based on <a href="https://www.rcsb.org/structure/2O8C">PDB entry 208C</a>.
+        </div>
+
+        <div class="my-3">
+            Variants can be highlighted in the structure by selecting their entry in the table
+            below the visualisation.
+        </div>
+
+        <img src="/static/images/gene_protein_structure_about.png" height="80" alt="protein structure" class="img-thumbnail">
+
+        <div class="my-3">
+            Key features of the 3D visualisation are marked by letters A-D:
+            <ol type="A">
+                <li>The 3D visualisation can be hidden or displayed using the Hide/Show button.</li>
+                <li>The visibility of MSH2, MSH6 and the DNA molecule can be toggled by the control check boxes.</li>
+                <li>The 3D structure of the MutSα complex can be rotated, zoomed and translated using mouse controls.
+                    Click on the Help button for more information about the controls. The structure shows
+                    the full length MSH2 protein (in light blue) and all of the MSH6 protein except the
+                    first 341 amino acids (in red). The first 341 amino acids are not part of the experimentally
+                    solved crystal structure. See the paper
+                    <a href="https://www.ncbi.nlm.nih.gov/pubmed/17531815">Structure of the Human MutSα DNA Lesion Recognition Complex, Molecular Cell, 2007</a>
+                    for more information about how the crystal structure was derived.</li>
+                <li>The buttons below the visualisation can be used to reset the display of
+                    the structure, toggle a spinning display of the structure, take a screenshot of <thead>
+                        current rendering of the structure, toggle fullscreen mode, and show help about
+                        manipulating the structure display.</li>
+            </ol>
+        </div>
+
+    </div>
+
+    <div class="my-3" id="gene_variant_table">
+        <h3>Table of all unique variants for a gene from the InSiGHT database</h3>
+
+        <div class="my-3">
+            An interative table collects all unique variants for a gene from the
+            InSiGHT database along with a variety of metadata. The metadata includes
+            basic genomic and proteomic coordinates, variant effect and consequence
+            information, population frequency information, predicted structure
+            and function effects from the mCSM tool suite, and predicted pathogenicity
+            from a variety of <i>insilico</i> tools.
+        </div>
+
+        <div class="my-3">
+            Individual variants in the table can be selected by clicking on their
+            rows in the table. If the variants are protein coding, and occur
+            within the solved MutSα crystal structure, they will be highlighted
+            by a coloured sphere, where the colour of the sphere indicates
+            the InSiGHT class of the variant.
+        </div>
+
+        <div class="my-3">
+            Additional specific details of a particular variant can be shown
+            by clicking the on <i>details</i> link in the right column of each row.
+            This will open a new web page for the selected variant.
+        </div>
+
+        <img src="/static/images/gene_variant_table_about.png" height="80" alt="variant table" class="img-thumbnail">
+
+        <div class="my-3">
+            Key features of the variant table are marked by letters A-F:
+            <ol type="A">
+                <li>All selections of variants from the table can be de-selected using the "Clear Selections"
+                    button. This will also remove any variants which were highlighted in the 3D structure above
+                    the table.</li>
+                <li>The variant table can be hidden or displayed using the Hide/Show button.</li>
+                <li>By default the variants table shows only certain key metadata columns.
+                    This can be adjusted with the "Columns" button, that provides a drop-down
+                    list of the available columns. The contents of the table can be copied to the clipboard
+                    using the "Copy" button. This can later be pasted into a spreadsheet or text editor. The number of rows
+                    displayed in the table can be adjusted by the "Show entries" button.</li>
+                <li>The "Search" text box will show any rows that contain text matching the search term.</li>
+                <li>Specific details for a particular variant can be seen by clicking on the "details" link. This will
+                    open a new page for the selected variant.</li>
+                <li>The data in the variants table is paginated. The navigation buttons at the bottom of the table
+                    allow you to explore the pages.
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="my-3" id="highlighting_variant_3d">
+        <h3>Highlighting variant positions in the 3D structure</h3>
+
+        <div class="my-3">
+            Individual variants can be selected from the variant table and
+            highlighted in the 3D structure of the protein.
+        </div>
+
+        <div class="my-3">
+            Clicking on a variant row in the table causes the row to be
+            coloured blue, as shown below.
+        </div>
+
+        <img src="/static/images/variant_row_selection_about.png" height="80" alt="variant row selection" class="img-thumbnail">
+
+        <div class="my-3">
+            If the selected variant is a coding variant, and if the amino acid affected by
+            the variant occurs within the 3D protein structure, its corresponding position
+            in the protein will be highlighted by a sphere. The center of the sphere is
+            positioned at the atomic center of the residue for the corresponding amino
+            acid. The colour of the sphere reflects the InSiGHT class of the selected
+            variant, using the same colour scheme as the <a href="#lollipop_plot">lollipop plot</a>.
+        </div>
+        <img src="/static/images/highlighted_variant_in_structure_about.png" height="80" alt="highlighted variant in 3D structure" class="img-thumbnail">
+
+        <div class="my-3">
+            You can deselect a previously selected variant by clicking on its row again
+            in the variant table. This will remove the blue highlighting of the row,
+            and also remove the corresponding sphere from the 3D visualisation.
+            All variant selections can be cleared in one step by clicking on the
+            "Clear Selections" button in the variant table.
+        </div>
+
+    </div>
+
+    <div class="my-3" id="gene_attributes_plot">
+        <h3>Comparison plots of variant attributes</h3>
+
+        <div class="my-3">
+            Interactive 2D plots allow you compare any two attributes of
+            variants for a given gene. The attributes correspond to the
+            columns in the variant table above the plots.
+        </div>
+
+        <div class="my-3">
+            Different types of plots will be generated depending on the
+            types of variables selected:
+            <ul>
+                <li>Box plot: when the X axis is a categorical attribute and the Y axis
+                    is a continuous numerical attribute.</li>
+                <li>Stacked bar plot: when both axes are categorical attributes.</li>
+                <li>Stacked histogram: when the X axis is a continuous numerical attribute and the Y axis
+                    is a categorical attribute.</li>
+                <li>Scatter plot: when both axes are continuous numerical attributes.</li>
+            </ul>
+        </div>
+
+        <div class="my-3">
+            Numerical axes may be plotted in log scale.
+        </div>
+
+
+        <img src="/static/images/gene_comparison_plot_about.png" height="80" alt="comparison plot" class="img-thumbnail">
+
+        <div class="my-3">
+            Key features of the variant table are marked by letters A-C:
+            <ol type="A">
+                <li>The variant table can be hidden or displayed using the Hide/Show button.</li>
+                <li>Log-scale axes projection can be toggled for numerical attributes.</li>
+                <li>The variant attributes plotted on the X and Y axes can be selected. These are the same
+                    attributes that are contained in the columns of the variant table.</li>
+            </ol>
+        </div>
+    </div>
+
+</div>
+
+<div class="my-3" id="all_variants">
+    <h2>Aggregated information for variants in MSH2 and MSH6</h2>
+
+    <div class="my-3">
+        The "All Variants" page contains aggregated information about all
+        unique MSH2 and MSH6 variants from the InSiGHT database.
+    </div>
+
+    <img src="/static/images/all_variants_menu_bar_about.png" height="50" alt="all variants menu selection" class="img-thumbnail">
+
+    <div class="my-3">
+        This page contains a table containing variant metadata and an interactive
+        plot that allows you to compare any two variant attributes across both of
+        the MSH2 and MSH6 genes. The functionality of the variant table is the
+        same as <a href="#gene_variant_table">the gene specific table</a>, and the
+        functionality of the interactive plot is the same as the
+        <a href="#gene_attributes_plot">gene specific plot</a>.
+    </div>
+</div>
+
+<div class="my-3" id="single_variant">
+    <h2>Information about a specific variant</h2>
+
+    <div class="my-3" id="selecting_variant">
+        <h3>Selecting a specific variant to display</h3>
+        <div class="my-3">
+            A single specific variant can be selected from the variants table
+            on the "MSH2", "MSH6" and "All Variants" pages, by clicking on the
+            "details" link on the right column of the row for that variant.
+        </div>
+
+        <img src="/static/images/variant_row_about.png" height="50" alt="variant row" class="img-thumbnail">
+
+        <div class="my-3">
+            This will open a new web page that displays information about this
+            specific variant.
+        </div>
+
+        <div class="my-3">
+            The same variant can also be accessed via a URL of the form "/variant/chromosome-coordinate-ref-alt",
+            where "coordinate" is the genomic coordinate of the variant with respect
+            to the hg19 human reference genome, "ref" is the reference allele at this position,
+            and "alt" is the variant allele at this position. For the specific
+            example variant above, the URL would be <a href="/variant/2-47630427-A-C">/variant/2-47630427-A-C</a>.
+        </div>
+    </div>
+
+    <div class="my-3" id="variant_interactions">
+        <h3>Interactive 3D visualisation of atomic interactions at variant residue</h3>
+        <div class="my-3">
+            At the top of the variant page is an interactive 3D visualisation of
+            the atomic interactions at the variant residue. </div>
+
+        <img src="/static/images/variant_interactions_about.png" height="50" alt="variant row" class="img-thumbnail">
+
+        <div class="my-3">
+            Key features of the 3D visualisation are marked by letters A-C:
+            <ol type="A">
+                <li>The visualisation can be hidden or displayed using the Hide/Show button.</li>
+                <li>Different types of atomic interactions can be toggled on and off. The
+                    specific interactions are colour-coded according the the button labels.</li>
+                <li>Controls for manipulating the 3D visualisation are provided at the bottom.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="my-3" id="variant_information">
+        <h3>Basic metadata for a single variant</h3>
+        <div class="my-3">
+            The second major component on the variant page is a table of basic
+            metadata about the variant, such as genomic and protein coordinates,
+            HGVS notation, consequence and impact (predicted by VEP), gnomAD
+            population frequency and InSight class.
+        </div>
+
+        <img src="/static/images/variant_information_about.png" alt="variant metadata" class="img-thumbnail">
+    </div>
+
+    <div class="my-3" id="variant_predictions">
+        <h3><i>In silico</i> predictions about a variant's structural and functional effect and pathogenicity</h3>
+        <div class="my-3">
+            The third major component on the variant page is a table of <i>in silico</i>
+            predictions about the structural and functional effect of a variant
+            and its pathogenicity.
+        </div>
+
+        <img src="/static/images/variant_predictions_about.png" alt="variant predictions" class="img-thumbnail">
+    </div>
+
+    <div class="my-3" id="variant_distribution_plot">
+        <h3>Plot of variant attribute distribution, highlighting the value associated with a specific variant</h3>
+        <div class="my-3">
+            The fourth major component on the variant page is plot of the distribution of
+            a particular variant attribute (metadata or prediction) for a given gene,
+            that also highlights the value associated with the specific variant
+            shown on the current page.
+        </div>
+
+        <div class="my-3">
+            In the example below, the distribution of InSiGHT classes for variants in
+            MSH2 is shown as a bar chart. This particular example occurs on a page
+            for a variant that happens to be in class 3. The red bar highlights the
+            class of this particular variant.
+        </div>
+
+        <div class="my-3">
+            You can select the variant attribute to be displayed. If the attribute
+            is numeric, then a histogram will be shown. If the attribute is
+            categorical then a bar chart will be displayed.
+        </div>
+
+        <img src="/static/images/variant_attribute_distribution_about.png" alt="variant predictions" class="img-thumbnail">
+
+        <div class="my-3">
+            Key features of the plot are marked by letters A-C:
+            <ol type="A">
+                <li>The plot can be hidden or displayed using the Hide/Show button.</li>
+                <li>The particular variant attribute to be displayed
+                    can be selected from the drop-down menu. Note that the resulting
+                    distribution will be shown for the gene that contains the variant
+                    from the current page.
+                </li>
+                <li>If the variant on the current page has an associated value
+                    for the selected attribute, the appropriate bar or histogram
+                    bucket containing that value will be highlighted in red.
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="my-3" id="acknowledgements">
+    <h2>Acknowledgements</h2>
+    <div class="my-3">
+        We thank the InSiGHT Variant Interpretation Committee for their support
+        of this study, and for allowing us to use the variant class information
+        from the InSiGHT database.
+    </div>
+</div>
+
+<div class="my-3" id="source_code">
+    <h2>Source Code</h2>
+    <div class="my-3">
+        The source code for the StruMMR website is open source, and released
+        under the terms of the MIT License. The source code can be found
+        on <a href="https://github.com/bjpop/strummr">GitHub</a>.
+    </div>
+
+    <div class="my-3" id="dependencies">
+        <h2>Software Dependencies</h2>
+        <div class="my-3">
+            The StruMMR website uses the following software dependencies. We
+            are sincerely grateful to the authors of these libraries.
+        </div>
+        <ul>
+            <li><a href="http://flask.pocoo.org/">Flask Python web framework</a></li>
+            <li><a href="https://github.com/arose/ngl">NGL protein viewer</a></li>
+            <li><a href="https://datatables.net/">Datatables interactive tabular display</a></li>
+            <li><a href="https://getbootstrap.com/">Bootstrap web toolkit</a></li>
+            <li><a href="https://github.com/plotly">Plotly interactive graphing library</a></li>
+            <li><a href="https://d3js.org/">D3 visualisation libary</a></li>
+        </ul>
+    </div>
+
+</div>
+
+
+<hr>
 
 {% endblock %}

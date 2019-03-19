@@ -543,23 +543,25 @@ function get_protein_info(gene_symbol) {
 
 function make_insight_url(gene_symbol) {
     if (gene_symbol === 'MSH2') {
-        url = "www.insight-database.org/#tabs-4";
+        url = "https://www.insight-database.org/#tabs-4";
     }
     else if (gene_symbol === 'MSH6') {
-        url = "www.insight-database.org/#tabs-5";
+        url = "https://www.insight-database.org/#tabs-5";
     }
-    return "<a href=https://" + url + ">" + url + "</a>";
+    //return "<a href=https://" + url + ">" + url + "</a>";
+    return url;
 }
 
 function make_uniprot_url(accession) {
-    var url = "www.uniprot.org/uniprot/" + accession
-    return "<a href=https://" + url + ">" + url + "</a>";
+    var url = "https://www.uniprot.org/uniprot/" + accession
+    //return "<a href=https://" + url + ">" + url + "</a>";
+    return url;
 }
 
 function gene_metadata(gene_symbol) {
     var protein_info = get_protein_info(gene_symbol);
-    $("#uniprot_link").html(make_uniprot_url(protein_info.metadata.accession));
-    $("#insight_link").html(make_insight_url(gene_symbol));
+    $("#uniprot_link").attr("href", make_uniprot_url(protein_info.metadata.accession));
+    $("#insight_link").attr("href", make_insight_url(gene_symbol));
 }
 
 function is_class_selected(variant_class) {
